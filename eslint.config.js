@@ -36,7 +36,6 @@ export default tseslint.config(
         // TEMPORARY: code that has not been migrated yet. The demolition slice
         // removes this element type and every rule that allows importing it.
         { type: 'legacy', pattern: ['src/infrastructure/*', 'src/testing/*'], mode: 'folder' },
-        { type: 'legacy', pattern: ['src/App.tsx', 'src/main.tsx'], mode: 'file' },
       ],
     },
     rules: {
@@ -95,13 +94,18 @@ export default tseslint.config(
             },
             {
               // Test infrastructure aggregates every feature's MSW handlers and
-              // renders the real route tree, so it reaches everywhere.
+              // renders the real route tree (built in app/router), so it
+              // reaches everywhere.
               from: 'testing',
-              allow: ['testing', 'shared', 'feature', 'legacy'],
+              allow: ['testing', 'shared', 'feature', 'legacy', 'app'],
             },
             {
+              // TEMPORARY: the not-yet-migrated layout routes still render the
+              // MainLayout/AuthLayout shells that #10 moved to app/layouts, and
+              // reference the router context type from app/router. Removed
+              // once those routes migrate out of legacy in a later slice.
               from: 'legacy',
-              allow: ['legacy', 'shared', 'feature'],
+              allow: ['legacy', 'shared', 'feature', 'app'],
             },
           ],
         },
