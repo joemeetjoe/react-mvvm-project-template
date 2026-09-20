@@ -1,7 +1,7 @@
 // components/common/ErrorWrapper.tsx
 import React, { ReactNode } from 'react';
-import { Alert, AlertDescription, AlertTitle } from '@/infrastructure/components/ui/alert';
-import { Button } from '@/infrastructure/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
+import { Button } from '@/shared/ui/button';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 interface ErrorWrapperProps {

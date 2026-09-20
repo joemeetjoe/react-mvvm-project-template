@@ -1,5 +1,5 @@
-import { SidebarTrigger } from '@/infrastructure/components/ui/sidebar';
-import { Separator } from '@/infrastructure/components/ui/separator';
+import { SidebarTrigger } from '@/shared/ui/sidebar';
+import { Separator } from '@/shared/ui/separator';
 
 export const AppNavbar = () => {
   return (

@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { Button } from '@/infrastructure/components/ui/button';
+import { Button } from '@/shared/ui/button';
 
 const LoginFailedPage = () => {
   return (

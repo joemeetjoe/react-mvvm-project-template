@@ -5,15 +5,15 @@ import {
     CardContent,
     CardFooter,
     CardTitle,
-} from '@/infrastructure/components/ui/card';
-import { Button } from '@/infrastructure/components/ui/button';
+} from '@/shared/ui/card';
+import { Button } from '@/shared/ui/button';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/infrastructure/components/ui/select';
+} from '@/shared/ui/select';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { AppTable, AppTableProps } from './AppTable';
 import { PaginationState, RowSelectionState } from '@tanstack/react-table';

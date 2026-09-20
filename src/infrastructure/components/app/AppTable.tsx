@@ -16,8 +16,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/infrastructure/components/ui/table';
-import { Checkbox } from '@/infrastructure/components/ui/checkbox';
+} from '@/shared/ui/table';
+import { Checkbox } from '@/shared/ui/checkbox';
 
 export interface AppTableProps<TData> {
   data: TData[];

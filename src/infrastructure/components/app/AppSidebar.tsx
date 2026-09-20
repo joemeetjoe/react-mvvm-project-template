@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import type { LucideIcon } from 'lucide-react';
 
-import { Label } from '@/infrastructure/components/ui/label';
+import { Label } from '@/shared/ui/label';
 import {
   Sidebar,
   SidebarContent,
@@ -16,9 +16,9 @@ import {
   useSidebar,
   SidebarTrigger,
   SidebarFooter,
-} from '@/infrastructure/components/ui/sidebar';
-import { Switch } from '@/infrastructure/components/ui/switch';
-import { ScrollArea } from '@/infrastructure/components/ui/scroll-area';
+} from '@/shared/ui/sidebar';
+import { Switch } from '@/shared/ui/switch';
+import { ScrollArea } from '@/shared/ui/scroll-area';
 
 export interface SidebarNavItem {
   title: string;

@@ -5,8 +5,8 @@ import {
     CardFooter,
     CardTitle,
     CardHeader,
-} from '@/infrastructure/components/ui/card';
-import { Button } from '@/infrastructure/components/ui/button';
+} from '@/shared/ui/card';
+import { Button } from '@/shared/ui/button';
 import { AppFilters, type FilterConfig } from '@/infrastructure/components/app/AppFilters';
 import { useVM } from '@/infrastructure/components/context/vmContext';
 import type { TBaseListViewModel } from '@/infrastructure/types/vm/list.types';
