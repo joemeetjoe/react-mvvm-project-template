@@ -15,6 +15,13 @@ describe('/users', () => {
     expect(screen.getByRole('row', { name: /Alan Turing/ })).toBeInTheDocument();
   });
 
+  it('redirects to login instead of showing the list when the visitor is not signed in', async () => {
+    renderRoute({ initialRoute: '/users', session: null });
+
+    expect(await screen.findByText(/enter your credentials/i)).toBeInTheDocument();
+    expect(screen.queryByRole('row', { name: /Ada Lovelace/ })).not.toBeInTheDocument();
+  });
+
   it('shows the skeleton while the loader is pending', async () => {
     server.use(
       http.get('*/api/users', async () => {

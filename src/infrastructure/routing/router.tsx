@@ -1,9 +1,9 @@
 import { createRouter } from '@tanstack/react-router';
-import { homeRoute } from './homeRoute';
 import { protectedLayoutRoute, authLayoutRoute, mainLayoutRoute, rootRoute } from './layoutRoutes';
 import { userListRoute } from '@/features/users/routes/userListRoute';
 import { usersDetailRoute } from '@/features/users/routes/detailRoute';
-import { loginFailedRoute } from './authRoutes';
+import { loginRoute } from '@/features/auth/routes/loginRoute';
+import { loginFailedRoute } from '@/features/auth/routes/loginFailedRoute';
 import type { RouterContext } from './routerContext';
 
 export type { RouterContext };
@@ -17,7 +17,7 @@ export const routeTree = rootRoute.addChildren([
     ]),
   ]),
   authLayoutRoute.addChildren([
-    homeRoute,
+    loginRoute,
     loginFailedRoute,
   ]),
 ]);
