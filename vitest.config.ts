@@ -12,10 +12,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     include: ['src/**/*.test.{ts,tsx}'],
-    setupFiles: ['./src/testing/setup.ts'],
-    environmentMatchGlobs: [
-      ['src/infrastructure/api/**/*.test.ts', 'node']
-    ],
+    setupFiles: ['./src/shared/testing/setup.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
