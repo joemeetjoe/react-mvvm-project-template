@@ -14,6 +14,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { routeTree } from '@/infrastructure/routing/router';
+
 import { type Session, applySession } from './session';
 
 export { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
@@ -70,6 +72,38 @@ const createHostRouter = (children: ReactNode, initialRoute: string, queryClient
     context: { queryClient },
     history: createMemoryHistory({ initialEntries: [initialRoute] }),
   });
+};
+
+export type RouteRenderResult = RenderResult & { queryClient: QueryClient };
+
+/**
+ * Renders the real application route tree at `initialRoute`, so an integration
+ * test exercises the route's loader, pending component and error component
+ * exactly as the app does.
+ */
+export const renderRoute = ({
+  initialRoute = '/',
+  session,
+}: ProviderOptions = {}): RouteRenderResult => {
+  applySession(session);
+
+  const queryClient = createTestQueryClient();
+
+  const router = createRouter({
+    routeTree,
+    context: { queryClient },
+    history: createMemoryHistory({ initialEntries: [initialRoute] }),
+  });
+
+  return {
+    user: userEvent.setup(),
+    queryClient,
+    ...rtlRender(
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>,
+    ),
+  };
 };
 
 export type RenderHookResult<TResult> = ReturnType<
