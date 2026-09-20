@@ -9,9 +9,8 @@
     "host": "vite --host",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/ --ext .ts,.tsx,.js,.jsx",
-    "lint:boundaries": "eslint src/ --ext .ts,.tsx --rule 'boundaries/element-types: error'",
     "check-circular": "madge --circular --extensions ts,tsx src/",
-    "validate": "npm run typecheck && npm run lint && npm run check-circular",
+    "validate": "npm run typecheck && npm run lint && npm run check-circular && npm run test",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "preview": "vite preview"

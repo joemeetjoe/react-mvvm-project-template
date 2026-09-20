@@ -7,7 +7,7 @@ import {
 import { authGuard } from '@/infrastructure/routing/authGuard';
 import { MainLayout } from '@/infrastructure/layouts/MainLayout';
 import { AuthLayout } from '@/infrastructure/layouts/AuthLayout';
-import type { RouterContext } from './router';
+import type { RouterContext } from './routerContext';
 
 export const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => <Outlet />
