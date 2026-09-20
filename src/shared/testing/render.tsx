@@ -1,4 +1,11 @@
-import { type ReactElement, type ReactNode, Suspense } from 'react';
+import {
+  type ReactElement,
+  type ReactNode,
+  Suspense,
+  createContext,
+  useContext,
+  useState,
+} from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   Outlet,
@@ -52,23 +59,31 @@ export const createTestQueryClient = (): QueryClient =>
 type TestRouterContext = { queryClient: QueryClient };
 
 /**
- * A throwaway router whose every path renders `children`, so a hook under test
- * sees the same router and query-client context it will see in the app.
+ * The host router is built once per `renderHook` call, so what it renders has
+ * to reach it through context rather than through a closure that would go stale.
  */
-const createHostRouter = (children: ReactNode, initialRoute: string, queryClient: QueryClient) => {
-  const host = (): ReactElement => <Suspense fallback={null}>{children}</Suspense>;
+const HostChildrenContext = createContext<ReactNode>(null);
 
+const HostRoute = (): ReactElement => (
+  <Suspense fallback={null}>{useContext(HostChildrenContext)}</Suspense>
+);
+
+/**
+ * A throwaway router whose every path renders the host children, so a hook
+ * under test sees the same router and query-client context as in the app.
+ */
+const createHostRouter = (initialRoute: string, queryClient: QueryClient) => {
   const rootRoute = createRootRouteWithContext<TestRouterContext>()({
     component: () => <Outlet />,
   });
 
-  const routeTree = rootRoute.addChildren([
-    createRoute({ getParentRoute: () => rootRoute, path: '/', component: host }),
-    createRoute({ getParentRoute: () => rootRoute, path: '$', component: host }),
+  const hostRouteTree = rootRoute.addChildren([
+    createRoute({ getParentRoute: () => rootRoute, path: '/', component: HostRoute }),
+    createRoute({ getParentRoute: () => rootRoute, path: '$', component: HostRoute }),
   ]);
 
   return createRouter({
-    routeTree,
+    routeTree: hostRouteTree,
     context: { queryClient },
     history: createMemoryHistory({ initialEntries: [initialRoute] }),
   });
@@ -126,15 +141,21 @@ export const renderHook = <TResult,>(
 
   const queryClient = createTestQueryClient();
 
-  const wrapper = ({ children }: { children: ReactNode }): ReactElement => (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={createHostRouter(children, initialRoute, queryClient)} />
-    </QueryClientProvider>
-  );
+  const Wrapper = ({ children }: { children: ReactNode }): ReactElement => {
+    const [router] = useState(() => createHostRouter(initialRoute, queryClient));
+
+    return (
+      <QueryClientProvider client={queryClient}>
+        <HostChildrenContext.Provider value={children}>
+          <RouterProvider router={router} />
+        </HostChildrenContext.Provider>
+      </QueryClientProvider>
+    );
+  };
 
   return {
     user: userEvent.setup(),
     queryClient,
-    ...rtlRenderHook<TResult | null, void>(hook, { wrapper }),
+    ...rtlRenderHook<TResult | null, void>(hook, { wrapper: Wrapper }),
   };
 };
