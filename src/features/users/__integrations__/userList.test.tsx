@@ -37,6 +37,7 @@ describe('/users', () => {
     renderRoute({ initialRoute: '/users' });
 
     expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/status 500/i).length).toBeGreaterThan(0);
     expect(screen.queryByRole('row', { name: /Ada Lovelace/ })).not.toBeInTheDocument();
   });
 
@@ -46,6 +47,7 @@ describe('/users', () => {
     renderRoute({ initialRoute: '/users' });
 
     expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/did not match the expected shape/i).length).toBeGreaterThan(0);
     expect(screen.queryByRole('row', { name: /Ada Lovelace/ })).not.toBeInTheDocument();
   });
 });
