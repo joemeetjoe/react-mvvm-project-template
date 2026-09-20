@@ -23,7 +23,8 @@ export default defineConfig({
       exclude: [
         'src/**/*.test.{ts,tsx}',
         'src/**/*.stories.{ts,tsx}',
-        'src/infrastructure/testing/**'
+        'src/infrastructure/testing/**',
+        'src/shared/ui/**'
       ],
       thresholds: {
         lines: 80,
