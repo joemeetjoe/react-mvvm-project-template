@@ -5,8 +5,10 @@ import { UserDetailView } from './UserDetailView';
 import { useUserDetailViewModel } from './useUserDetailViewModel';
 
 export const UserDetail = (): ReactElement => {
-  const { userId } = useParams({ from: '/users/$userId' });
-  const props = useUserDetailViewModel(userId);
+  // `strict: false` (rather than a `from` route id) keeps this screen decoupled
+  // from the pathless layout routes it happens to be nested under.
+  const { userId } = useParams({ strict: false });
+  const props = useUserDetailViewModel(userId as string);
 
   return <UserDetailView {...props} />;
 };

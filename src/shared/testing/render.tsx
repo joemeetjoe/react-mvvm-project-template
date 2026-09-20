@@ -9,6 +9,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   Outlet,
+  RouterContextProvider,
   RouterProvider,
   createMemoryHistory,
   createRootRouteWithContext,
@@ -37,16 +38,6 @@ export type ProviderOptions = {
   /** Seeds the session before anything renders; `null` renders signed out. */
   session?: Session | null;
 };
-
-/**
- * Renders a component on its own, with no providers. Views are pure, so this is
- * all a View test needs — and it keeps `@testing-library/react` imported in
- * exactly one place.
- */
-export const render = (ui: ReactElement): RenderResult => ({
-  user: userEvent.setup(),
-  ...rtlRender(ui),
-});
 
 export const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -87,6 +78,22 @@ const createHostRouter = (initialRoute: string, queryClient: QueryClient) => {
     context: { queryClient },
     history: createMemoryHistory({ initialEntries: [initialRoute] }),
   });
+};
+
+/**
+ * Renders a component on its own. Views are pure, so this needs no providers
+ * beyond a router context — present only so a View's own `<Link>` (the one
+ * router import decision 7 allows) has somewhere to read it from. Uses
+ * `RouterContextProvider` rather than `RouterProvider` so it supplies that
+ * context without the async route matching a full router render would need.
+ */
+export const render = (ui: ReactElement): RenderResult => {
+  const router = createHostRouter('/', createTestQueryClient());
+
+  return {
+    user: userEvent.setup(),
+    ...rtlRender(<RouterContextProvider router={router}>{ui}</RouterContextProvider>),
+  };
 };
 
 export type RouteRenderResult = RenderResult & { queryClient: QueryClient };
