@@ -3,11 +3,11 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from '@/infrastructure/components/ui/card';
-import { Button } from '@/infrastructure/components/ui/button';
-import { Input } from '@/infrastructure/components/ui/input';
-import { Label } from '@/infrastructure/components/ui/label';
-import { Separator } from '@/infrastructure/components/ui/separator';
+} from '@/shared/ui/card';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
+import { Separator } from '@/shared/ui/separator';
 import { Pencil } from 'lucide-react';
 
 interface FieldData {

@@ -6,7 +6,7 @@ import {
   CardContent,
   CardFooter,
   CardTitle,
-} from "@/infrastructure/components/ui/card";
+} from "@/shared/ui/card";
 import {
   Table,
   TableBody,
@@ -14,8 +14,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/infrastructure/components/ui/table";
-import { Skeleton } from "@/infrastructure/components/ui/skeleton";
+} from "@/shared/ui/table";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 interface AppTableCardSkeletonProps {
   children?: ReactNode;

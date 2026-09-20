@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { Button } from '@/infrastructure/components/ui/button';
-import { Input } from '@/infrastructure/components/ui/input';
-import { Label } from '@/infrastructure/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/infrastructure/components/ui/card';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/card';
 import { useAuthStore } from '@/infrastructure/stores/useAuthStore';
 
 const LoginPage = () => {

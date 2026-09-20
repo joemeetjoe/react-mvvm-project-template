@@ -3,17 +3,17 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/infrastructure/components/ui/popover';
-import { Calendar } from '@/infrastructure/components/ui/calendar';
-import { Input } from '@/infrastructure/components/ui/input';
+} from '@/shared/ui/popover';
+import { Calendar } from '@/shared/ui/calendar';
+import { Input } from '@/shared/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/infrastructure/components/ui/select';
-import { Button } from '@/infrastructure/components/ui/button';
+} from '@/shared/ui/select';
+import { Button } from '@/shared/ui/button';
 import { CalendarIcon } from 'lucide-react';
 import { GridLayout } from '@/infrastructure/layouts/GridLayout';
 

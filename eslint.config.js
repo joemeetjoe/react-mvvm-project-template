@@ -26,6 +26,7 @@ export default tseslint.config(
         { type: 'model', pattern: 'src/features/*/model/*' },
         { type: 'routes', pattern: 'src/features/*/routes/*' },
         { type: 'infrastructure', pattern: 'src/infrastructure/*' },
+        { type: 'shared', pattern: 'src/shared/*' },
         { type: 'testing', pattern: 'src/testing/*' },
       ],
       'boundaries/ignore': ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
@@ -42,38 +43,43 @@ export default tseslint.config(
         {
           default: 'disallow',
           rules: [
-            // View can import from: VM, Infrastructure, own feature model (for types only)
+            // View can import from: VM, Infrastructure, Shared, own feature model (for types only)
             {
               from: 'view',
-              allow: ['vm', 'infrastructure'],
+              allow: ['vm', 'infrastructure', 'shared'],
               message: 'View layer must not import from Model directly. Use VM instead.',
             },
-            // VM can import from: Model, Infrastructure
+            // VM can import from: Model, Infrastructure, Shared
             {
               from: 'vm',
-              allow: ['model', 'infrastructure'],
+              allow: ['model', 'infrastructure', 'shared'],
               message: 'VM layer must not import from View.',
             },
-            // Model can import from: Infrastructure only
+            // Model can import from: Infrastructure, Shared only
             {
               from: 'model',
-              allow: ['infrastructure'],
+              allow: ['infrastructure', 'shared'],
               message: 'Model layer must not import from VM or View.',
             },
             // Routes can import from: View, VM (to wire them together)
             {
               from: 'routes',
-              allow: ['view', 'vm', 'infrastructure'],
+              allow: ['view', 'vm', 'infrastructure', 'shared'],
             },
-            // Infrastructure can import from: Infrastructure only
+            // Infrastructure can import from: Infrastructure, Shared
             {
               from: 'infrastructure',
-              allow: ['infrastructure'],
+              allow: ['infrastructure', 'shared'],
+            },
+            // Shared can import from: Shared only
+            {
+              from: 'shared',
+              allow: ['shared'],
             },
             // Testing can import from anywhere
             {
               from: 'testing',
-              allow: ['view', 'vm', 'model', 'routes', 'infrastructure', 'testing'],
+              allow: ['view', 'vm', 'model', 'routes', 'infrastructure', 'shared', 'testing'],
             },
           ],
         },
