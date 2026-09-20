@@ -1,14 +1,28 @@
 import { httpGet } from '@/shared/lib/http';
 import { parseResponse } from '@/shared/lib/parseResponse';
 
-import { type User, userListSchema } from './userSchema';
+import { type SortDirection, type UserListResponse, type UserSortField, userListResponseSchema } from './userSchema';
 
 export const userEndpoints = {
   list: '/api/users',
 } as const;
 
-export const fetchUserList = async (): Promise<User[]> => {
-  const payload = await httpGet(userEndpoints.list);
+export type UserListParams = {
+  sort: UserSortField;
+  direction: SortDirection;
+  page: number;
+  pageSize: number;
+};
 
-  return parseResponse(userListSchema, 'user list', payload);
+export const fetchUserList = async (params: UserListParams): Promise<UserListResponse> => {
+  const query = new URLSearchParams({
+    sort: params.sort,
+    direction: params.direction,
+    page: String(params.page),
+    pageSize: String(params.pageSize),
+  });
+
+  const payload = await httpGet(`${userEndpoints.list}?${query.toString()}`);
+
+  return parseResponse(userListResponseSchema, 'user list', payload);
 };
