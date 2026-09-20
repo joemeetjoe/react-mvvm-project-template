@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { userListSchema, userSchema } from './userSchema';
+import { userListResponseSchema, userListSchema, userSchema } from './userSchema';
 
 const validUser = {
   id: 'USR-001',
@@ -41,5 +41,21 @@ describe('userListSchema', () => {
 
   it('rejects a payload that is not an array', () => {
     expect(() => userListSchema.parse({ data: [validUser] })).toThrow();
+  });
+});
+
+describe('userListResponseSchema', () => {
+  it('accepts a page of users with a total count', () => {
+    const payload = { users: [validUser], total: 15 };
+
+    expect(userListResponseSchema.parse(payload)).toEqual(payload);
+  });
+
+  it('rejects a payload missing the total count', () => {
+    expect(() => userListResponseSchema.parse({ users: [validUser] })).toThrow();
+  });
+
+  it('rejects a negative total count', () => {
+    expect(() => userListResponseSchema.parse({ users: [validUser], total: -1 })).toThrow();
   });
 });
