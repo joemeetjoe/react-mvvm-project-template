@@ -1,14 +1,12 @@
 import { createRouter } from '@tanstack/react-router';
-import type { QueryClient } from '@tanstack/react-query';
 import { homeRoute } from './homeRoute';
 import { protectedLayoutRoute, authLayoutRoute, mainLayoutRoute, rootRoute } from './layoutRoutes';
 import { usersListRoute } from '@/features/users/routes/listRoute';
 import { usersDetailRoute } from '@/features/users/routes/detailRoute';
 import { loginFailedRoute } from './authRoutes';
+import type { RouterContext } from './routerContext';
 
-export interface RouterContext {
-  queryClient: QueryClient;
-}
+export type { RouterContext };
 
 export const routeTree = rootRoute.addChildren([
   mainLayoutRoute.addChildren([
