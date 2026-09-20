@@ -1,8 +1,8 @@
 import { Outlet } from '@tanstack/react-router';
 import { SidebarProvider, SidebarInset } from '@/shared/ui/sidebar';
-import { AppSidebar } from '@/infrastructure/components/app/AppSidebar';
-import { AppNavbar } from '@/infrastructure/components/app/AppNavbar';
-import { sidebarNavItems } from '@/infrastructure/constants/sidebarConfig';
+import { AppSidebar } from './AppSidebar';
+import { AppNavbar } from './AppNavbar';
+import { sidebarNavItems } from './sidebarConfig';
 
 export const MainLayout = () => {
   return (

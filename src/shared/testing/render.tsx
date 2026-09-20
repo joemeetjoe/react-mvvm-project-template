@@ -21,7 +21,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { routeTree } from '@/infrastructure/routing/router';
+import { routeTree } from '@/app/router/router';
 
 import { type Session, applySession } from './session';
 

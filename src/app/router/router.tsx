@@ -1,9 +1,14 @@
 import { createRouter } from '@tanstack/react-router';
-import { homeRoute } from './homeRoute';
-import { protectedLayoutRoute, authLayoutRoute, mainLayoutRoute, rootRoute } from './layoutRoutes';
+import { homeRoute } from '@/infrastructure/routing/homeRoute';
+import {
+  protectedLayoutRoute,
+  authLayoutRoute,
+  mainLayoutRoute,
+  rootRoute,
+} from '@/infrastructure/routing/layoutRoutes';
 import { userListRoute } from '@/features/users/routes/userListRoute';
 import { usersDetailRoute } from '@/features/users/routes/detailRoute';
-import { loginFailedRoute } from './authRoutes';
+import { loginFailedRoute } from '@/infrastructure/routing/authRoutes';
 import type { RouterContext } from './routerContext';
 
 export type { RouterContext };

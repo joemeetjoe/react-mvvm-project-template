@@ -1,5 +1,5 @@
 import { Users, LayoutDashboard } from 'lucide-react';
-import type { SidebarNavItem } from '@/infrastructure/components/app/AppSidebar';
+import type { SidebarNavItem } from './AppSidebar';
 
 export const sidebarNavItems: SidebarNavItem[] = [
   {
