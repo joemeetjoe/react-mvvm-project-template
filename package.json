@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "host": "vite --host",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc -b --force",
     "lint": "eslint src/ --ext .ts,.tsx,.js,.jsx",
     "check-circular": "madge --circular --extensions ts,tsx src/",
     "validate": "npm run typecheck && npm run lint && npm run check-circular && npm run test",

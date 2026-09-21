@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useRouter } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import type { LucideIcon } from 'lucide-react';
 
 import { Label } from '@/shared/ui/label';
@@ -36,7 +36,6 @@ interface NavigationSidebarProps {
   items: SidebarNavItem[];
   activeItem: SidebarNavItem;
   setActiveItem: (item: SidebarNavItem) => void;
-  setOpen: (open: boolean) => void;
 }
 
 interface ContentSidebarProps {
@@ -70,7 +69,6 @@ export const AppSidebar = ({ items, ...props }: AppSidebarProps) => {
         items={items}
         activeItem={activeItem}
         setActiveItem={(item) => handleItemClick(item)}
-        setOpen={setOpen}
       />
       <ContentSidebar
         activeItem={activeItem}
@@ -83,7 +81,7 @@ export const AppSidebar = ({ items, ...props }: AppSidebarProps) => {
   );
 };
 
-const NavigationSidebar = ({ items, activeItem, setActiveItem, setOpen }: NavigationSidebarProps) => {
+const NavigationSidebar = ({ items, activeItem, setActiveItem }: NavigationSidebarProps) => {
   return (
     <Sidebar collapsible="none" className="w-[var(--sidebar-width-icon)]!">
       <SidebarContent>
