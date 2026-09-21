@@ -2,7 +2,9 @@
 
 This index tracks the architecture decisions for the MVVM restructuring described in
 [issue #1](../../../../issues/1). The rationale in each ADR is drawn from that issue's
-decision log; ADRs do not introduce rationale beyond it.
+decision log; ADRs 0001 to 0006 do not introduce rationale beyond it. ADR 0007 records the
+outcome of [issue #14](../../../../issues/14) and draws on
+[Proposal 0001](../proposals/0001-config-driven-screen-layer.md).
 
 | ADR | Title | Status |
 | --- | --- | --- |
@@ -12,6 +14,7 @@ decision log; ADRs do not introduce rationale beyond it.
 | [0004](0004-list-state-in-url-search-params-zustand-for-global-state.md) | List state in URL search params; zustand for global state only | Accepted |
 | [0005](0005-no-feature-to-feature-imports-shared-session-store.md) | No feature-to-feature imports; shared session store | Accepted |
 | [0006](0006-route-owns-loading-and-error.md) | The route owns loading and error: `ensureQueryData` plus `useSuspenseQuery` | Accepted |
+| [0007](0007-config-driven-screen-layer-not-adopted.md) | A config-driven screen layer is not adopted | Accepted |
 
 ## Ledger guidance referenced
 
@@ -26,5 +29,5 @@ These ADRs follow or depart from Ledger Live's contributing documentation, cited
 - [Testing strategy](https://developers.ledger.com/docs/ledger-live/contributing/explanation/testing-strategy)
 - [Write tests](https://developers.ledger.com/docs/ledger-live/contributing/how-to/write-tests)
 
-Note: ADR 0001 also records that a config-driven screen layer is parked as a possible
-future *optional* layer on top of hand-written hook ViewModels, not a replacement for them.
+Note: ADR 0001 parked a config-driven screen layer as a possible *optional* layer on top
+of hand-written hook ViewModels. ADR 0007 records that it was explored and not adopted.
