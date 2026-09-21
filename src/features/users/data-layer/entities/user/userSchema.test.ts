@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { userListResponseSchema, userListSchema, userSchema } from './userSchema';
+import {
+  userFilterOptionsSchema,
+  userListResponseSchema,
+  userListSchema,
+  userSchema,
+} from './userSchema';
 
 const validUser = {
   id: 'USR-001',
@@ -57,5 +62,23 @@ describe('userListResponseSchema', () => {
 
   it('rejects a negative total count', () => {
     expect(() => userListResponseSchema.parse({ users: [validUser], total: -1 })).toThrow();
+  });
+});
+
+describe('userFilterOptionsSchema', () => {
+  it('accepts roles, statuses and departments', () => {
+    const payload = {
+      roles: ['admin', 'user'],
+      statuses: ['active', 'inactive'],
+      departments: ['Engineering', 'Research'],
+    };
+
+    expect(userFilterOptionsSchema.parse(payload)).toEqual(payload);
+  });
+
+  it('rejects a role that is not one of the known roles', () => {
+    expect(() =>
+      userFilterOptionsSchema.parse({ roles: ['wizard'], statuses: [], departments: [] }),
+    ).toThrow();
   });
 });

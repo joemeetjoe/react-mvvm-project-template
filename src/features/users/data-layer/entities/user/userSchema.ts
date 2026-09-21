@@ -27,6 +27,16 @@ export type UserRole = User['role'];
 export type UserStatus = User['status'];
 export type UserListResponse = z.infer<typeof userListResponseSchema>;
 
+// The options a filter form can offer (issue #6). Departments are the
+// distinct values seen in the data rather than a fixed enum, so they come
+// from the server rather than being hardcoded here.
+export const userFilterOptionsSchema = z.object({
+  roles: z.array(z.enum(userRoles)),
+  statuses: z.array(z.enum(userStatuses)),
+  departments: z.array(z.string()),
+});
+export type UserFilterOptions = z.infer<typeof userFilterOptionsSchema>;
+
 // The columns the users list can be sorted by (issue #5).
 export const userSortFields = ['firstName', 'email', 'department', 'role', 'status'] as const;
 export type UserSortField = (typeof userSortFields)[number];
