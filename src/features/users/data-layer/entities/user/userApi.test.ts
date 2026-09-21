@@ -73,6 +73,25 @@ describe('fetchUserList', () => {
     expect(query.get('status')).toBeNull();
     expect(query.get('department')).toBeNull();
   });
+
+  it('sends the status and department filters when they are set', async () => {
+    let requestedUrl = '';
+
+    server.use(
+      http.get('*/api/users', ({ request }) => {
+        requestedUrl = request.url;
+
+        return HttpResponse.json({ users: [], total: 0 });
+      }),
+    );
+
+    await fetchUserList({ ...defaultParams, status: 'active', department: 'Engineering' });
+
+    const query = new URL(requestedUrl).searchParams;
+
+    expect(query.get('status')).toBe('active');
+    expect(query.get('department')).toBe('Engineering');
+  });
 });
 
 describe('fetchUserFilterOptions', () => {

@@ -94,4 +94,31 @@ describe('FilterCard', () => {
 
     expect(screen.getByRole('button', { name: /apply/i })).toBeDisabled();
   });
+
+  it('falls back to an empty value when a field is missing from values', () => {
+    render(<FilterCard {...baseProps} values={{}} />);
+
+    expect(screen.getByLabelText('Search')).toHaveValue('');
+    expect(screen.getByLabelText('Role')).toHaveValue('');
+  });
+
+  it('uses a custom allLabel for the placeholder option of a select field', () => {
+    render(
+      <FilterCard
+        {...baseProps}
+        fields={[
+          {
+            id: 'role',
+            label: 'Role',
+            kind: 'select',
+            options: [{ value: 'admin', label: 'Admin' }],
+            allLabel: 'Any role',
+          },
+        ]}
+        values={{ role: '' }}
+      />,
+    );
+
+    expect(screen.getByRole('option', { name: 'Any role' })).toBeInTheDocument();
+  });
 });
