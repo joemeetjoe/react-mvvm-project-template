@@ -1,0 +1,10 @@
+import type { ReactElement } from 'react';
+
+import { {{entityPascal}}ListView } from './{{entityPascal}}ListView';
+import { use{{entityPascal}}ListViewModel } from './use{{entityPascal}}ListViewModel';
+
+export const {{entityPascal}}List = (): ReactElement => {
+  const props = use{{entityPascal}}ListViewModel();
+
+  return <{{entityPascal}}ListView {...props} />;
+};

@@ -1,0 +1,11 @@
+import { HttpResponse, http } from 'msw';
+
+import { {{entityCamel}}Fixtures } from './{{entityCamel}}Fixtures';
+
+/**
+ * Shared by the test server (`shared/testing/server`) and the dev-mode
+ * browser worker.
+ */
+export const {{entityCamel}}Handlers = [
+  http.get('*/api/{{pluralKebab}}', () => HttpResponse.json({{entityCamel}}Fixtures)),
+];

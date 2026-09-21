@@ -23,8 +23,8 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "types": ["vite/client"],
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {

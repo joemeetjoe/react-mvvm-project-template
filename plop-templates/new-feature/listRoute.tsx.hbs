@@ -1,0 +1,28 @@
+import { type AnyRoute, createRoute } from '@tanstack/react-router';
+
+import { RouteErrorBoundary } from '@/shared/routing/RouteErrorBoundary';
+
+import { {{entityCamel}}ListQueryOptions } from '../data-layer/entities/{{entityCamel}}/{{entityCamel}}Queries';
+import { {{entityPascal}}List } from '../screens/{{entityPascal}}List';
+import { {{entityPascal}}ListSkeleton } from '../screens/{{entityPascal}}List/{{entityPascal}}ListSkeleton';
+
+/**
+ * A feature never names its parent route: `app/router` owns the layout tree
+ * and injects the parent here, so `features/` never imports `app/`.
+ */
+export const create{{entityPascal}}ListRoute = <TParentRoute extends AnyRoute>(
+  parentRoute: TParentRoute,
+) =>
+  createRoute({
+    getParentRoute: () => parentRoute,
+    path: '{{pluralKebab}}',
+    loader: async ({ context }): Promise<void> => {
+      await context.queryClient.ensureQueryData({{entityCamel}}ListQueryOptions());
+    },
+    // Show the skeleton as soon as the loader is in flight rather than after
+    // the router's default 1s grace period.
+    pendingMs: 0,
+    component: {{entityPascal}}List,
+    pendingComponent: {{entityPascal}}ListSkeleton,
+    errorComponent: RouteErrorBoundary,
+  });

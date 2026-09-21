@@ -1,0 +1,13 @@
+import { z } from 'zod';
+
+// TODO: replace these placeholder fields with the real shape of a {{entityCamel}}.
+export const {{entityCamel}}Schema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  createdAt: z.string().min(1),
+  updatedAt: z.string().min(1),
+});
+
+export const {{entityCamel}}ListSchema = z.array({{entityCamel}}Schema);
+
+export type {{entityPascal}} = z.infer<typeof {{entityCamel}}Schema>;

@@ -1,0 +1,10 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
+
+import { {{entityCamel}}ListQueryOptions } from '../../data-layer/entities/{{entityCamel}}/{{entityCamel}}Queries';
+import type { {{entityPascal}}ListViewProps } from './{{entityPascal}}ListView';
+
+export const use{{entityPascal}}ListViewModel = (): {{entityPascal}}ListViewProps => {
+  const { data: {{pluralCamel}} } = useSuspenseQuery({{entityCamel}}ListQueryOptions());
+
+  return { {{pluralCamel}} };
+};

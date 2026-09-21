@@ -1,0 +1,14 @@
+import { httpGet } from '@/shared/lib/http';
+import { parseResponse } from '@/shared/lib/parseResponse';
+
+import { type {{entityPascal}}, {{entityCamel}}ListSchema } from './{{entityCamel}}Schema';
+
+export const {{entityCamel}}Endpoints = {
+  list: '/api/{{pluralKebab}}',
+} as const;
+
+export const fetch{{entityPascal}}List = async (): Promise<{{entityPascal}}[]> => {
+  const payload = await httpGet({{entityCamel}}Endpoints.list);
+
+  return parseResponse({{entityCamel}}ListSchema, '{{entityCamel}} list', payload);
+};

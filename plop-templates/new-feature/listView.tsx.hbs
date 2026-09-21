@@ -1,0 +1,19 @@
+import type { ReactElement } from 'react';
+
+import type { {{entityPascal}} } from '../../data-layer/entities/{{entityCamel}}/{{entityCamel}}Schema';
+
+export type {{entityPascal}}ListViewProps = {
+  {{pluralCamel}}: {{entityPascal}}[];
+};
+
+// TODO: replace this placeholder with a table of {{pluralCamel}} (see
+// UserListView for the pattern) once the real fields are known. Until then
+// this intentionally does not render each {{entityCamel}}'s data, so the
+// generated integration test starts red.
+export const {{entityPascal}}ListView = ({ {{pluralCamel}} }: {{entityPascal}}ListViewProps): ReactElement => (
+  <section className="space-y-4">
+    <h1 className="text-2xl font-semibold tracking-tight">{{titleCasePlural}}</h1>
+
+    <p>{ {{pluralCamel}}.length } {{pluralCamel}} loaded. Implement the table to make the integration test pass.</p>
+  </section>
+);
