@@ -22,6 +22,13 @@ const useTestUserUpdateMutation = (id: string) => {
   return { detailQuery, mutation };
 };
 
+/** No `useQuery` observer, so the detail key starts out uncached. */
+const useMutationOnly = (id: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(userUpdateMutationOptions(queryClient, id));
+};
+
 describe('userUpdateMutationOptions', () => {
   afterEach(() => {
     resetUserFixtures();
@@ -94,5 +101,43 @@ describe('userUpdateMutationOptions', () => {
 
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: userKeys.detail(user.id) });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: userKeys.lists() });
+  });
+
+  it('succeeds without touching the cache when there is no prior detail cached', async () => {
+    const [user] = userFixtures;
+
+    const { result } = renderHook(() => useMutationOnly(user.id));
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    act(() => {
+      result.current?.mutate({ ...user, firstName: 'Changed' });
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isSuccess).toBe(true);
+    });
+  });
+
+  it('does not throw rolling back a failed mutation with no prior detail cached', async () => {
+    const [user] = userFixtures;
+
+    server.use(http.patch('*/api/users/:id', () => new HttpResponse(null, { status: 500 })));
+
+    const { result } = renderHook(() => useMutationOnly(user.id));
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    act(() => {
+      result.current?.mutate({ ...user, firstName: 'Changed' });
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isError).toBe(true);
+    });
   });
 });

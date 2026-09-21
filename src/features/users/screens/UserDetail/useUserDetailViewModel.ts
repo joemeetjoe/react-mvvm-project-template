@@ -80,11 +80,7 @@ export const useUserDetailViewModel = (userId: string): UserDetailViewProps => {
     ],
     isEditing,
     isSaving: mutation.isPending,
-    saveError: mutation.isError
-      ? mutation.error instanceof Error
-        ? mutation.error.message
-        : 'Failed to save changes'
-      : null,
+    saveError: mutation.isError ? mutation.error.message : null,
     form,
     onBack: () => router.history.back(),
     onEdit: handleEdit,
