@@ -4,10 +4,11 @@ import {
   createRoute,
 } from '@tanstack/react-router';
 
-import { authGuard } from '@/infrastructure/routing/authGuard';
 import { MainLayout } from '@/app/layouts/MainLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
-import type { RouterContext } from '@/app/router/routerContext';
+
+import { authGuard } from './authGuard';
+import type { RouterContext } from './routerContext';
 
 export const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => <Outlet />

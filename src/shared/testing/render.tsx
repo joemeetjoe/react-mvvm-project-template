@@ -9,6 +9,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   type AnyRoute,
+  type AnyRouter,
   Outlet,
   RouterContextProvider,
   RouterProvider,
@@ -147,7 +148,7 @@ export const render = (ui: ReactElement): RenderResult => {
 export type RouteRenderResult = RenderResult & {
   queryClient: QueryClient;
   /** Exposed so a test can drive `router.history.back()` / `.forward()`. */
-  router: ReturnType<typeof createRouter>;
+  router: AnyRouter;
 };
 
 /**

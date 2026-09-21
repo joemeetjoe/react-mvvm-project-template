@@ -1,8 +1,7 @@
-import { createRoute } from '@tanstack/react-router';
+import { type AnyRoute, createRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
-import { RouteErrorBoundary } from '@/infrastructure/routing/RouteErrorBoundary';
-import { protectedLayoutRoute } from '@/infrastructure/routing/layoutRoutes';
+import { RouteErrorBoundary } from '@/shared/routing/RouteErrorBoundary';
 
 import { userRoles, userSortFields, userStatuses } from '../data-layer/entities/user/userSchema';
 import {
@@ -39,21 +38,28 @@ export const userListSearchSchema = z.object({
 export const validateUserListSearch = (search: Record<string, unknown>) =>
   userListSearchSchema.parse(search);
 
-export const userListRoute = createRoute({
-  getParentRoute: () => protectedLayoutRoute,
-  path: 'users',
-  validateSearch: validateUserListSearch,
-  loaderDeps: ({ search }) => search,
-  loader: async ({ context, deps }): Promise<void> => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(userListQueryOptions(deps)),
-      context.queryClient.ensureQueryData(userFilterOptionsQueryOptions()),
-    ]);
-  },
-  // Show the skeleton as soon as the loader is in flight rather than after the
-  // router's default 1s grace period.
-  pendingMs: 0,
-  component: UserList,
-  pendingComponent: UserListSkeleton,
-  errorComponent: RouteErrorBoundary,
-});
+/**
+ * A feature never names its parent route: `app/router` owns the layout tree and
+ * injects the parent here, so `features/` never imports `app/` (decision 6)
+ * while TanStack Router still gets the `getParentRoute` link it needs to type
+ * the tree.
+ */
+export const createUserListRoute = <TParentRoute extends AnyRoute>(parentRoute: TParentRoute) =>
+  createRoute({
+    getParentRoute: () => parentRoute,
+    path: 'users',
+    validateSearch: validateUserListSearch,
+    loaderDeps: ({ search }) => search,
+    loader: async ({ context, deps }): Promise<void> => {
+      await Promise.all([
+        context.queryClient.ensureQueryData(userListQueryOptions(deps)),
+        context.queryClient.ensureQueryData(userFilterOptionsQueryOptions()),
+      ]);
+    },
+    // Show the skeleton as soon as the loader is in flight rather than after
+    // the router's default 1s grace period.
+    pendingMs: 0,
+    component: UserList,
+    pendingComponent: UserListSkeleton,
+    errorComponent: RouteErrorBoundary,
+  });

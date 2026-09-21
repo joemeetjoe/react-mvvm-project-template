@@ -33,9 +33,6 @@ export default tseslint.config(
         { type: 'shared', pattern: 'src/shared/*', mode: 'folder' },
         { type: 'feature', pattern: 'src/features/*', mode: 'folder', capture: ['feature'] },
         { type: 'app', pattern: 'src/app/*', mode: 'folder' },
-        // TEMPORARY: code that has not been migrated yet. The demolition slice
-        // removes this element type and every rule that allows importing it.
-        { type: 'legacy', pattern: ['src/infrastructure/*', 'src/testing/*'], mode: 'folder' },
       ],
     },
     rules: {
@@ -72,42 +69,24 @@ export default tseslint.config(
           rules: [
             {
               from: 'app',
-              allow: ['app', 'feature', 'shared', 'testing', 'legacy'],
+              allow: ['app', 'feature', 'shared', 'testing'],
             },
             {
               from: 'feature',
-              allow: [
-                ['feature', { feature: '${from.feature}' }],
-                'shared',
-                'testing',
-                'legacy',
-              ],
-              message:
-                'A feature may only import itself, shared and (temporarily) legacy — never another feature.',
+              allow: [['feature', { feature: '${from.feature}' }], 'shared', 'testing'],
+              message: 'A feature may only import itself and shared — never another feature.',
             },
             {
-              // TEMPORARY: `legacy` is here only because the shadcn primitives
-              // in shared/ui still import @/infrastructure/lib/utils. `testing`
-              // is here because decision 10 requires every test — including a
-              // shared component's own — to go through the custom renderer.
               from: 'shared',
-              allow: ['shared', 'legacy', 'testing'],
-              message: 'shared may only import shared (and its own tests).',
+              allow: ['shared'],
+              message: 'shared may only import shared.',
             },
             {
               // Test infrastructure aggregates every feature's MSW handlers and
               // renders the real route tree (built in app/router), so it
               // reaches everywhere.
               from: 'testing',
-              allow: ['testing', 'shared', 'feature', 'legacy', 'app'],
-            },
-            {
-              // TEMPORARY: the not-yet-migrated layout routes still render the
-              // MainLayout/AuthLayout shells that #10 moved to app/layouts, and
-              // reference the router context type from app/router. Removed
-              // once those routes migrate out of legacy in a later slice.
-              from: 'legacy',
-              allow: ['legacy', 'shared', 'feature', 'app'],
+              allow: ['testing', 'shared', 'feature', 'app'],
             },
           ],
         },
@@ -159,15 +138,15 @@ export default tseslint.config(
     },
   },
   {
-    // Shared code's own tests (e.g. the http wrapper) use the MSW test server
-    // the same way feature tests do.
+    // Shared code's own tests (e.g. the http wrapper) reach the custom renderer
+    // and the MSW test server the same way feature tests do (decision 10).
     files: ['src/shared/**/*.test.{ts,tsx}'],
     rules: {
       'boundaries/element-types': [
         'error',
         {
           default: 'disallow',
-          rules: [{ from: 'shared', allow: ['shared', 'legacy', 'testing'] }],
+          rules: [{ from: 'shared', allow: ['shared', 'testing'] }],
         },
       ],
     },
