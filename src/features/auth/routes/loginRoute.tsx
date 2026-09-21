@@ -1,7 +1,5 @@
-import { createRoute } from '@tanstack/react-router';
+import { type AnyRoute, createRoute } from '@tanstack/react-router';
 import { z } from 'zod';
-
-import { authLayoutRoute } from '@/infrastructure/routing/layoutRoutes';
 
 import { Login } from '../screens/Login';
 
@@ -11,9 +9,11 @@ export const loginSearchSchema = z.object({
 
 export type LoginSearch = z.infer<typeof loginSearchSchema>;
 
-export const loginRoute = createRoute({
-  getParentRoute: () => authLayoutRoute,
-  path: '/',
-  validateSearch: loginSearchSchema,
-  component: Login,
-});
+/** Parent injected by `app/router` — see `createUserListRoute`. */
+export const createLoginRoute = <TParentRoute extends AnyRoute>(parentRoute: TParentRoute) =>
+  createRoute({
+    getParentRoute: () => parentRoute,
+    path: '/',
+    validateSearch: loginSearchSchema,
+    component: Login,
+  });

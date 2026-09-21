@@ -1,29 +1,33 @@
 import { createRouter } from '@tanstack/react-router';
+
+import { createUserListRoute } from '@/features/users/routes/userListRoute';
+import { createUserDetailRoute } from '@/features/users/routes/userDetailRoute';
+import { createLoginRoute } from '@/features/auth/routes/loginRoute';
+import { createLoginFailedRoute } from '@/features/auth/routes/loginFailedRoute';
+
 import {
   protectedLayoutRoute,
   authLayoutRoute,
   mainLayoutRoute,
   rootRoute,
-} from '@/infrastructure/routing/layoutRoutes';
-import { userListRoute } from '@/features/users/routes/userListRoute';
-import { userDetailRoute } from '@/features/users/routes/userDetailRoute';
-import { loginRoute } from '@/features/auth/routes/loginRoute';
-import { loginFailedRoute } from '@/features/auth/routes/loginFailedRoute';
+} from './layoutRoutes';
 import type { RouterContext } from './routerContext';
 
 export type { RouterContext };
 
+// `app/` owns the layout tree and passes each feature's route factory the
+// parent it hangs off, so a feature never imports `app/` (decision 6).
 export const routeTree = rootRoute.addChildren([
   mainLayoutRoute.addChildren([
     protectedLayoutRoute.addChildren([
-      userListRoute,
-      userDetailRoute,
+      createUserListRoute(protectedLayoutRoute),
+      createUserDetailRoute(protectedLayoutRoute),
       // Add new feature routes here
     ]),
   ]),
   authLayoutRoute.addChildren([
-    loginRoute,
-    loginFailedRoute,
+    createLoginRoute(authLayoutRoute),
+    createLoginFailedRoute(authLayoutRoute),
   ]),
 ]);
 
