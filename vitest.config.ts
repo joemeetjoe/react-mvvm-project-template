@@ -17,6 +17,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     include: ['src/**/*.test.{ts,tsx}'],
+    // Playwright owns e2e/ (npm run test:e2e); belt-and-suspenders alongside
+    // the include glob above so Vitest never picks up its .spec.ts files.
+    exclude: ['e2e/**', 'node_modules/**'],
     setupFiles: ['./src/shared/testing/setup.ts'],
     coverage: {
       provider: 'v8',
