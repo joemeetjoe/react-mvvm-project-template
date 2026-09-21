@@ -1,27 +1,37 @@
-import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import type { ChangeEvent, FormEvent, ReactElement } from 'react';
+
 import { Button } from '@/shared/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/card';
-import { useAuthStore } from '@/infrastructure/stores/useAuthStore';
 
-const LoginPage = () => {
-  const [email, setEmail] = useState('admin@example.com');
-  const [password, setPassword] = useState('password');
-  const { login, isLoading, error, clearError } = useAuthStore();
-  const navigate = useNavigate();
+export type LoginViewProps = {
+  email: string;
+  password: string;
+  isSubmitting: boolean;
+  onEmailChange: (email: string) => void;
+  onPasswordChange: (password: string) => void;
+  onSubmit: () => void;
+};
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    clearError();
-
-    try {
-      await login(email, password);
-      navigate({ to: '/users' });
-    } catch {
-      // error is set in the store by the login function
-    }
+export const LoginView = ({
+  email,
+  password,
+  isSubmitting,
+  onEmailChange,
+  onPasswordChange,
+  onSubmit,
+}: LoginViewProps): ReactElement => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    onSubmit();
   };
 
   return (
@@ -35,19 +45,13 @@ const LoginPage = () => {
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
-            {error && (
-              <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
-                {error}
-              </div>
-            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => onEmailChange(event.target.value)}
                 required
               />
             </div>
@@ -56,9 +60,8 @@ const LoginPage = () => {
               <Input
                 id="password"
                 type="password"
-                placeholder="Any password works"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => onPasswordChange(event.target.value)}
                 required
               />
             </div>
@@ -67,8 +70,8 @@ const LoginPage = () => {
             </p>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Signing in...' : 'Sign In'}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Signing in...' : 'Sign In'}
             </Button>
           </CardFooter>
         </form>
@@ -76,5 +79,3 @@ const LoginPage = () => {
     </div>
   );
 };
-
-export default LoginPage;

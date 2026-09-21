@@ -29,5 +29,5 @@ export const protectedLayoutRoute = createRoute({
   getParentRoute: () => mainLayoutRoute,
   id: 'protectedLayout',
   component: () => <Outlet />,
-  beforeLoad: authGuard,
+  beforeLoad: ({ location }) => authGuard(location),
 });

@@ -31,6 +31,7 @@ export default defineConfig({
         'src/shared/hooks/**/*.{ts,tsx}',
         'src/shared/lib/**/*.ts',
         'src/shared/utils/**/*.ts',
+        'src/shared/stores/**/*.ts',
       ],
       exclude: ['src/**/*.test.{ts,tsx}'],
       // Tiered per decision 10. shadcn (`src/shared/ui`) is never measured.
@@ -43,6 +44,7 @@ export default defineConfig({
         'src/shared/hooks/**': sharedComponentTier,
         'src/shared/lib/**': dataLayerTier,
         'src/shared/utils/**': dataLayerTier,
+        'src/shared/stores/**': dataLayerTier,
       },
     },
   },
