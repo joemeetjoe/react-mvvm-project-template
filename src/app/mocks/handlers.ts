@@ -1,5 +1,6 @@
 import { sessionHandlers } from '@/features/auth/data-layer/entities/session/sessionHandlers';
 import { userHandlers } from '@/features/users/data-layer/entities/user/userHandlers';
+// plop:handler-import
 
 /**
  * Aggregates every feature entity's MSW handlers for the dev-mode browser

@@ -4,6 +4,7 @@ import { createUserListRoute } from '@/features/users/routes/userListRoute';
 import { createUserDetailRoute } from '@/features/users/routes/userDetailRoute';
 import { createLoginRoute } from '@/features/auth/routes/loginRoute';
 import { createLoginFailedRoute } from '@/features/auth/routes/loginFailedRoute';
+// plop:route-import
 
 import {
   protectedLayoutRoute,

@@ -1,0 +1,15 @@
+import { describe, expect, it } from 'vitest';
+
+import { renderRoute, screen } from '@/shared/testing/render';
+
+// This starts red: {{entityPascal}}ListView renders a placeholder instead of
+// the fetched {{pluralCamel}} (see its TODO). Replace the assertion below
+// with one that matches your real markup (e.g. a table row per
+// {{entityCamel}}) as you build out the screen.
+describe('/{{pluralKebab}}', () => {
+  it('renders a row for every {{entityCamel}} the API returns', async () => {
+    renderRoute({ initialRoute: '/{{pluralKebab}}' });
+
+    expect(await screen.findByText(/First {{entityPascal}}/)).toBeInTheDocument();
+  });
+});

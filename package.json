@@ -13,6 +13,8 @@
     "validate": "npm run typecheck && npm run lint && npm run check-circular && npm run test",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:scaffolder": "vitest run --config vitest.scaffolder.config.ts",
+    "new-feature": "plop new-feature",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -76,6 +78,7 @@
     "jsdom": "^28.0.0",
     "madge": "^8.0.0",
     "msw": "^2.12.10",
+    "plop": "^4.0.5",
     "tailwindcss": "^4.1.17",
     "tw-animate-css": "^1.2.8",
     "typescript": "^5.9.3",
