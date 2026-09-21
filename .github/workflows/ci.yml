@@ -17,6 +17,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run validate
+      - run: npm run test:scaffolder
 
   # Separate job so the Playwright smoke suite never slows down or gates
   # inside `validate` (issue #15) — it runs alongside it, not before it.

@@ -19,6 +19,22 @@ and on push to `main`. A change is not done until `npm run validate` passes loca
 A separate `e2e` CI job runs the Playwright smoke suite (`npm run test:e2e`) alongside
 `validate`, not inside it, so it never slows down or gates the definition of done above.
 
+## The `new-feature` scaffolder
+
+`npm run new-feature` (Plop; `plopfile.js` and `plop-templates/new-feature/`) generates
+the skeleton described in the [README walkthrough](README.md#adding-a-feature-a-worked-walkthrough):
+the entity's data-layer, a read-only list screen, a route factory, and a failing
+integration test, and wires the route/handlers/sidebar registration points via the
+`// plop:...` anchor comments in `src/app/router/router.tsx`, `src/app/mocks/handlers.ts`,
+`src/shared/testing/server.ts`, and `src/app/layouts/sidebarConfig.ts`. **Any change to
+a template under `plop-templates/new-feature/` or to `plopfile.js` must keep
+`npm run test:scaffolder` green** — it is the acceptance check: it generates a sample
+feature, asserts it lints and typechecks, and asserts its integration test fails for the
+right reason (the placeholder screen, not a compile/import error), then cleans up. It's
+kept out of `npm run validate` because it shells out to a real `tsc -b --force` and a
+real `vitest run` and temporarily edits the registration files; CI runs it as its own
+step after `validate`.
+
 ## Testing strategy
 
 - **Integration tests come first.** For a screen, write the test in the feature's

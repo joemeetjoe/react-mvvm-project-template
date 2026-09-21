@@ -1,0 +1,14 @@
+import { queryOptions } from '@tanstack/react-query';
+
+import { fetch{{entityPascal}}List } from './{{entityCamel}}Api';
+
+export const {{entityCamel}}Keys = {
+  all: ['{{pluralKebab}}'] as const,
+  lists: () => [...{{entityCamel}}Keys.all, 'list'] as const,
+};
+
+export const {{entityCamel}}ListQueryOptions = () =>
+  queryOptions({
+    queryKey: {{entityCamel}}Keys.lists(),
+    queryFn: fetch{{entityPascal}}List,
+  });

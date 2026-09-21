@@ -225,7 +225,11 @@ versus writing an integration test instead.
 This follows the same steps that built `features/users`, naming the real files. It
 ends with the integration test, which is where you should start when you write your
 own feature (integration tests come first, per
-[CONTRIBUTING.md](CONTRIBUTING.md#testing-strategy)).
+[CONTRIBUTING.md](CONTRIBUTING.md#testing-strategy)) — or generate the skeleton with
+`npm run new-feature` (prompts for a feature and entity name) or
+`npm run new-feature -- <feature> <entity>` (e.g. `npm run new-feature -- invoices
+invoice`), which wires up steps 1–4 below and drops in the failing integration test
+from step 5 for you to make pass. See `plopfile.js` and `plop-templates/new-feature/`.
 
 1. **Data layer.** Under `features/<name>/data-layer/entities/<entity>/`, add:
    - `<entity>Schema.ts` — zod object schema, inferred `type`, and any enums
