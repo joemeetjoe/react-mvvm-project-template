@@ -59,6 +59,7 @@ Other scripts (`package.json`):
 | `npm run check-circular` | `madge --circular` over `src/` |
 | `npm run test` | Run the Vitest suite once |
 | `npm run test:coverage` | Run tests with the tiered coverage thresholds |
+| `npm run test:e2e` | Run the Playwright smoke suite (chromium, firefox, webkit) against the mocked dev server |
 | `npm run validate` | typecheck + lint + check-circular + test — the single done gate, see [CONTRIBUTING.md](CONTRIBUTING.md) |
 | `npm run preview` | Preview a production build |
 
@@ -212,6 +213,12 @@ and [ADR 0006](docs/adr/0006-route-owns-loading-and-error.md).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md#testing-strategy) for the full testing strategy,
 coverage tiers, and the regression-test rule.
+
+A small Playwright smoke suite (`e2e/`, `npm run test:e2e`) runs a handful of journeys
+— log in, browse/sort/page users, edit and save, log out — against the Vite dev server
+with `VITE_API_MOCK=true`, in chromium, firefox, and webkit. See
+[CONTRIBUTING.md](CONTRIBUTING.md#end-to-end-vs-integration-test) for when to add to it
+versus writing an integration test instead.
 
 ## Adding a feature: a worked walkthrough
 

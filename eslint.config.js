@@ -9,7 +9,10 @@ const viewRuleMessage =
   'A View has no external dependencies (decision 7). Move this to the ViewModel and pass the result in as a prop.';
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', 'coverage'] },
+  // `npm run lint` only ever targets `src/`; `e2e/` is Playwright's own tree
+  // (not part of the `src/` import boundaries) and is ignored here too so an
+  // IDE running ESLint workspace-wide doesn't flag it against those rules.
+  { ignores: ['dist', 'node_modules', 'coverage', 'e2e', 'playwright-report', 'test-results'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
