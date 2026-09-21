@@ -14,6 +14,11 @@ let userStore: User[] = userFixtures.map((user) => ({ ...user }));
 const findStoredUser = (id: string): User | undefined =>
   userStore.find((candidate) => candidate.id === id);
 
+/** Restores the mutable store to the original fixtures; call between tests that PATCH. */
+export const resetUserFixtures = (): void => {
+  userStore = userFixtures.map((user) => ({ ...user }));
+};
+
 /**
  * Shared by the test server (`shared/testing/server`) and, from #10, the
  * dev-mode browser worker.
