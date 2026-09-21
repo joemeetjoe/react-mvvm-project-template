@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { server } from '@/shared/testing/server';
 
-import { fetchUserDetail, fetchUserList } from './userApi';
+import { fetchUserDetail, fetchUserFilterOptions, fetchUserList } from './userApi';
 import { userFixtures } from './userFixtures';
 
 const defaultParams = { sort: 'firstName', direction: 'asc', page: 1, pageSize: 10 } as const;
@@ -51,6 +51,45 @@ describe('fetchUserList', () => {
     server.use(http.get('*/api/users', () => new HttpResponse(null, { status: 500 })));
 
     await expect(fetchUserList(defaultParams)).rejects.toThrow(/500/);
+  });
+
+  it('sends only the filters that are set', async () => {
+    let requestedUrl = '';
+
+    server.use(
+      http.get('*/api/users', ({ request }) => {
+        requestedUrl = request.url;
+
+        return HttpResponse.json({ users: [], total: 0 });
+      }),
+    );
+
+    await fetchUserList({ ...defaultParams, search: 'ada', role: 'admin' });
+
+    const query = new URL(requestedUrl).searchParams;
+
+    expect(query.get('search')).toBe('ada');
+    expect(query.get('role')).toBe('admin');
+    expect(query.get('status')).toBeNull();
+    expect(query.get('department')).toBeNull();
+  });
+});
+
+describe('fetchUserFilterOptions', () => {
+  it('returns the roles, statuses and departments the API responds with', async () => {
+    const options = await fetchUserFilterOptions();
+
+    expect(options.roles).toContain('admin');
+    expect(options.statuses).toContain('active');
+    expect(options.departments).toContain('Engineering');
+  });
+
+  it('throws a readable error when the response payload does not match the schema', async () => {
+    server.use(http.get('*/api/users/filter-options', () => HttpResponse.json({ roles: ['x'] })));
+
+    await expect(fetchUserFilterOptions()).rejects.toThrow(
+      /user filter options.*did not match the expected shape/i,
+    );
   });
 });
 

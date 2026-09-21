@@ -3,19 +3,32 @@ import { describe, expect, it } from 'vitest';
 import { userListSearchSchema } from './userListRoute';
 
 describe('userListSearchSchema', () => {
-  it('defaults sort, direction, page and pageSize when nothing is given', () => {
+  it('defaults sort, direction, page, pageSize and filters when nothing is given', () => {
     expect(userListSearchSchema.parse({})).toEqual({
       sort: 'firstName',
       direction: 'asc',
       page: 1,
       pageSize: 10,
+      search: '',
+      role: '',
+      status: '',
+      department: '',
     });
   });
 
   it('accepts valid search params', () => {
     expect(
       userListSearchSchema.parse({ sort: 'email', direction: 'desc', page: 2, pageSize: 20 }),
-    ).toEqual({ sort: 'email', direction: 'desc', page: 2, pageSize: 20 });
+    ).toEqual({
+      sort: 'email',
+      direction: 'desc',
+      page: 2,
+      pageSize: 20,
+      search: '',
+      role: '',
+      status: '',
+      department: '',
+    });
   });
 
   it('falls back to the default sort field when it is not sortable', () => {
@@ -41,5 +54,26 @@ describe('userListSearchSchema', () => {
       page: 3,
       pageSize: 20,
     });
+  });
+
+  it('accepts valid filter params', () => {
+    expect(
+      userListSearchSchema.parse({
+        search: 'ada',
+        role: 'admin',
+        status: 'active',
+        department: 'Engineering',
+      }),
+    ).toMatchObject({
+      search: 'ada',
+      role: 'admin',
+      status: 'active',
+      department: 'Engineering',
+    });
+  });
+
+  it('falls back to no filter when role or status is not one of the known values', () => {
+    expect(userListSearchSchema.parse({ role: 'wizard' }).role).toBe('');
+    expect(userListSearchSchema.parse({ status: 'napping' }).status).toBe('');
   });
 });
