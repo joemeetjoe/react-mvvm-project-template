@@ -22,3 +22,17 @@ export const httpGet = async (path: string): Promise<unknown> => {
 
   return (await response.json()) as unknown;
 };
+
+export const httpPatch = async (path: string, body: unknown): Promise<unknown> => {
+  const response = await fetch(path, {
+    method: 'PATCH',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new HttpError(response.status, response.statusText);
+  }
+
+  return (await response.json()) as unknown;
+};
