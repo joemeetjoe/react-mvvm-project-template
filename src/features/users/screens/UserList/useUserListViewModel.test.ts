@@ -6,7 +6,9 @@ import { validateUserListSearch } from '../../routes/userListRoute';
 import { userFixtures } from '../../data-layer/entities/user/userFixtures';
 import { useUserListViewModel } from './useUserListViewModel';
 
-const searchRoutes = [{ path: 'users', validateSearch: validateUserListSearch }];
+const searchRoutes = [
+  { id: '/mainLayout/protectedLayout/users', validateSearch: validateUserListSearch },
+];
 
 const setup = (initialRoute: string) =>
   renderHook(() => useUserListViewModel(), { initialRoute, searchRoutes });
@@ -26,15 +28,15 @@ describe('useUserListViewModel', () => {
   });
 
   it('maps sort, direction, page and pageSize search params to the query', async () => {
-    const { result } = setup('/users?sort=email&direction=desc&page=2&pageSize=5');
+    const { result } = setup('/users?sort=email&direction=desc&page=1&pageSize=20');
 
     await waitFor(() => {
       expect(result.current?.sort).toEqual({ field: 'email', direction: 'desc' });
     });
 
-    expect(result.current?.page).toBe(2);
-    expect(result.current?.pageSize).toBe(5);
-    expect(result.current?.users).toHaveLength(5);
+    expect(result.current?.page).toBe(1);
+    expect(result.current?.pageSize).toBe(20);
+    expect(result.current?.users).toHaveLength(userFixtures.length);
   });
 
   it('navigates to the new sort and resets to page 1 when onSortChange is called', async () => {

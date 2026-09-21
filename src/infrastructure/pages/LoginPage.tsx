@@ -18,7 +18,9 @@ const LoginPage = () => {
 
     try {
       await login(email, password);
-      navigate({ to: '/users' });
+      // The users list route's search params all have defaults (issue #5);
+      // land on page 1, sorted by first name.
+      navigate({ to: '/users', search: { sort: 'firstName', direction: 'asc', page: 1, pageSize: 10 } });
     } catch {
       // error is set in the store by the login function
     }

@@ -24,10 +24,16 @@ export const userListSearchSchema = z.object({
     .catch(10),
 });
 
+// A function wrapper (rather than passing the zod object directly) so the
+// ViewModel test's host router (`shared/testing/render`) can reuse the exact
+// same validation the real route performs.
+export const validateUserListSearch = (search: Record<string, unknown>) =>
+  userListSearchSchema.parse(search);
+
 export const userListRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: 'users',
-  validateSearch: userListSearchSchema,
+  validateSearch: validateUserListSearch,
   loaderDeps: ({ search }) => search,
   loader: async ({ context, deps }): Promise<void> => {
     await context.queryClient.ensureQueryData(userListQueryOptions(deps));
