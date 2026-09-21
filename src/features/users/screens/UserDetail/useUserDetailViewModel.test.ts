@@ -1,11 +1,18 @@
-import { describe, expect, it } from 'vitest';
+import { HttpResponse, http } from 'msw';
+import { afterEach, describe, expect, it } from 'vitest';
 
-import { renderHook, waitFor } from '@/shared/testing/render';
+import { act, renderHook, waitFor } from '@/shared/testing/render';
+import { server } from '@/shared/testing/server';
 
 import { userFixtures } from '../../data-layer/entities/user/userFixtures';
+import { resetUserFixtures } from '../../data-layer/entities/user/userHandlers';
 import { useUserDetailViewModel } from './useUserDetailViewModel';
 
 describe('useUserDetailViewModel', () => {
+  afterEach(() => {
+    resetUserFixtures();
+  });
+
   it("turns the user the API returns into the View's title and sections", async () => {
     const [user] = userFixtures;
     const { result } = renderHook(() => useUserDetailViewModel(user.id));
@@ -45,5 +52,130 @@ describe('useUserDetailViewModel', () => {
     await waitFor(() => {
       expect(result.current?.onBack).toBeInstanceOf(Function);
     });
+  });
+
+  it('starts out of edit mode', async () => {
+    const [user] = userFixtures;
+    const { result } = renderHook(() => useUserDetailViewModel(user.id));
+
+    await waitFor(() => {
+      expect(result.current?.isEditing).toBe(false);
+    });
+  });
+
+  it('enters edit mode when onEdit is called', async () => {
+    const [user] = userFixtures;
+    const { result } = renderHook(() => useUserDetailViewModel(user.id));
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    act(() => {
+      result.current?.onEdit();
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isEditing).toBe(true);
+    });
+  });
+
+  it('discards the draft and leaves edit mode when onCancel is called', async () => {
+    const [user] = userFixtures;
+    const { result } = renderHook(() => useUserDetailViewModel(user.id));
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    act(() => {
+      result.current?.onEdit();
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isEditing).toBe(true);
+    });
+
+    act(() => {
+      result.current?.form.setFieldValue('firstName', 'Draft Name');
+    });
+
+    act(() => {
+      result.current?.onCancel();
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isEditing).toBe(false);
+    });
+
+    expect(result.current?.title).toBe(`${user.firstName} ${user.lastName}`);
+  });
+
+  it('saves the edited values and reflects them immediately', async () => {
+    const [user] = userFixtures;
+    const { result } = renderHook(() => useUserDetailViewModel(user.id));
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    act(() => {
+      result.current?.onEdit();
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isEditing).toBe(true);
+    });
+
+    act(() => {
+      result.current?.form.setFieldValue('firstName', 'Updated');
+    });
+
+    await act(async () => {
+      await result.current?.form.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isEditing).toBe(false);
+    });
+
+    expect(result.current?.isSaving).toBe(false);
+    expect(result.current?.saveError).toBeNull();
+    expect(result.current?.title).toBe(`Updated ${user.lastName}`);
+  });
+
+  it('shows an error and keeps editing when the save fails', async () => {
+    const [user] = userFixtures;
+    server.use(http.patch('*/api/users/:id', () => new HttpResponse(null, { status: 500 })));
+
+    const { result } = renderHook(() => useUserDetailViewModel(user.id));
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    act(() => {
+      result.current?.onEdit();
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isEditing).toBe(true);
+    });
+
+    act(() => {
+      result.current?.form.setFieldValue('firstName', 'Updated');
+    });
+
+    await act(async () => {
+      await result.current?.form.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(result.current?.saveError).not.toBeNull();
+    });
+
+    expect(result.current?.isEditing).toBe(true);
+    expect(result.current?.isSaving).toBe(false);
+    expect(result.current?.title).toBe(`${user.firstName} ${user.lastName}`);
   });
 });
