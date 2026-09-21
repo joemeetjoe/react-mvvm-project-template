@@ -20,3 +20,14 @@ export const userListSchema = z.array(userSchema);
 export type User = z.infer<typeof userSchema>;
 export type UserRole = User['role'];
 export type UserStatus = User['status'];
+
+export const userUpdateSchema = userSchema.pick({
+  firstName: true,
+  lastName: true,
+  email: true,
+  role: true,
+  status: true,
+  department: true,
+});
+
+export type UserUpdate = z.infer<typeof userUpdateSchema>;

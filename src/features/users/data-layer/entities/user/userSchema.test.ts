@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { userListSchema, userSchema } from './userSchema';
+import { userListSchema, userSchema, userUpdateSchema } from './userSchema';
 
 const validUser = {
   id: 'USR-001',
@@ -41,5 +41,34 @@ describe('userListSchema', () => {
 
   it('rejects a payload that is not an array', () => {
     expect(() => userListSchema.parse({ data: [validUser] })).toThrow();
+  });
+});
+
+describe('userUpdateSchema', () => {
+  const validUpdate = {
+    firstName: 'Ada',
+    lastName: 'Lovelace',
+    email: 'ada.lovelace@example.com',
+    role: 'admin',
+    status: 'active',
+    department: 'Engineering',
+  };
+
+  it('accepts a well-formed update', () => {
+    expect(userUpdateSchema.parse(validUpdate)).toEqual(validUpdate);
+  });
+
+  it('rejects an update whose role is not one of the known roles', () => {
+    expect(() => userUpdateSchema.parse({ ...validUpdate, role: 'wizard' })).toThrow();
+  });
+
+  it('rejects an update whose email is not an email address', () => {
+    expect(() => userUpdateSchema.parse({ ...validUpdate, email: 'not-an-email' })).toThrow();
+  });
+
+  it('rejects an update with a missing required field', () => {
+    const { department: _department, ...withoutDepartment } = validUpdate;
+
+    expect(() => userUpdateSchema.parse(withoutDepartment)).toThrow();
   });
 });
