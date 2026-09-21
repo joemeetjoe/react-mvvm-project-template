@@ -1,7 +1,7 @@
 import { HttpResponse, delay, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
-import { renderRoute, screen } from '@/shared/testing/render';
+import { renderRoute, screen, waitFor } from '@/shared/testing/render';
 import { server } from '@/shared/testing/server';
 
 import { userFixtures } from '../data-layer/entities/user/userFixtures';
@@ -20,7 +20,7 @@ describe('/users', () => {
       http.get('*/api/users', async () => {
         await delay(100);
 
-        return HttpResponse.json(userFixtures);
+        return HttpResponse.json({ users: userFixtures.slice(0, 10), total: userFixtures.length });
       }),
     );
 
@@ -49,5 +49,62 @@ describe('/users', () => {
     expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
     expect(screen.getAllByText(/did not match the expected shape/i).length).toBeGreaterThan(0);
     expect(screen.queryByRole('row', { name: /Ada Lovelace/ })).not.toBeInTheDocument();
+  });
+
+  it('sorts by clicking a column header and updates the URL', async () => {
+    const { user, router } = renderRoute({ initialRoute: '/users' });
+
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Name' }));
+
+    await waitFor(() => {
+      expect(router.state.location.search).toMatchObject({ sort: 'firstName', direction: 'desc' });
+    });
+    expect(await screen.findByRole('row', { name: /Shafi Goldwasser/ })).toBeInTheDocument();
+    expect(screen.queryByRole('row', { name: /Ada Lovelace/ })).not.toBeInTheDocument();
+  });
+
+  it('pages through the list by clicking Next and updates the URL', async () => {
+    const { user, router } = renderRoute({ initialRoute: '/users' });
+
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Next' }));
+
+    await waitFor(() => {
+      expect(router.state.location.search).toMatchObject({ page: 2 });
+    });
+    expect(await screen.findByRole('row', { name: /Katherine Johnson/ })).toBeInTheDocument();
+    expect(screen.queryByRole('row', { name: /Ada Lovelace/ })).not.toBeInTheDocument();
+  });
+
+  it('loading a URL with page and sort search params shows that page in that order', async () => {
+    renderRoute({ initialRoute: '/users?sort=email&direction=asc&page=2&pageSize=10' });
+
+    expect(await screen.findByRole('row', { name: /Katherine Johnson/ })).toBeInTheDocument();
+    expect(screen.queryByRole('row', { name: /Ada Lovelace/ })).not.toBeInTheDocument();
+  });
+
+  it('falls back to the defaults when search params are invalid instead of erroring', async () => {
+    renderRoute({ initialRoute: '/users?sort=not-a-field&page=-5&pageSize=999' });
+
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+    expect(screen.queryByText(/something went wrong/i)).not.toBeInTheDocument();
+  });
+
+  it('preserves list state across back and forward navigation', async () => {
+    const { user, router } = renderRoute({ initialRoute: '/users' });
+
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Next' }));
+    expect(await screen.findByRole('row', { name: /Katherine Johnson/ })).toBeInTheDocument();
+
+    router.history.back();
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+
+    router.history.forward();
+    expect(await screen.findByRole('row', { name: /Katherine Johnson/ })).toBeInTheDocument();
   });
 });
