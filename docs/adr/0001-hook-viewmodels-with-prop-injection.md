@@ -45,9 +45,10 @@ Accepted cost: more boilerplate per screen than a factory would have generated. 
 accepted in exchange for a checked ViewModel-to-View contract and predictable,
 single-invocation rendering.
 
-A config-driven screen layer generated from a schema is **parked as a possible optional
-layer to add later on top of this pattern** — it is not a replacement for hand-written
-hook ViewModels.
+A config-driven screen layer generated from a schema was parked here as a possible
+optional layer on top of this pattern, never a replacement for hand-written hook
+ViewModels. It was later explored and **not adopted**: see
+[ADR 0007](0007-config-driven-screen-layer-not-adopted.md).
 
 ## Relationship to Ledger's guidance
 
