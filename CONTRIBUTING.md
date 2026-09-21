@@ -16,6 +16,9 @@ definition of done — there is no separate boundaries or type-check step to rem
 `.github/workflows/ci.yml` runs `npm ci` then `npm run validate` on every pull request
 and on push to `main`. A change is not done until `npm run validate` passes locally.
 
+A separate `e2e` CI job runs the Playwright smoke suite (`npm run test:e2e`) alongside
+`validate`, not inside it, so it never slows down or gates the definition of done above.
+
 ## Testing strategy
 
 - **Integration tests come first.** For a screen, write the test in the feature's
@@ -53,6 +56,24 @@ and on push to `main`. A change is not done until `npm run validate` passes loca
   `src/shared/components/**` / `src/shared/hooks/**` / `src/shared/routing/**` 90%,
   `src/shared/lib/**` / `src/shared/utils/**` / `src/shared/stores/**` 100%,
   `src/shared/ui/**` (shadcn output) excluded. Run `npm run test:coverage` to check.
+
+## End-to-end vs integration test
+
+**Integration tests come first — write one before reaching for Playwright.** An
+integration test (`renderRoute` against MSW, see above) already exercises the real
+route tree, loaders, and network layer inside jsdom; it's fast, runs in every `npm run
+test`, and is where sort/page/filter/edit/validation/error-branch behavior belongs.
+
+**End-to-end (`e2e/`, Playwright) is a thin smoke layer above that**, for the small set
+of things a jsdom integration test can't see: does the app actually boot in a real
+browser, does client-side routing work end to end, does the real MSW *worker* (not the
+test server) serve data, does a full-page reload/login/logout cycle behave. Reach for
+an e2e test only when the thing you're proving is boot- or routing-level, not a new
+business rule — if you're tempted to add a second e2e test to cover a variant (a filter
+combination, a validation error, a role), that variant belongs in an integration test
+instead, and the smoke suite (`playwright.config.ts`, `testDir: e2e`) stays small on
+purpose. Run it locally with `npm run test:e2e` (chromium, firefox, and webkit); it
+runs in CI as its own job, separate from `validate`.
 
 ## Regression-test rule
 
