@@ -14,6 +14,15 @@ describe('auth', () => {
     expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
   });
 
+  it('lands on the default page after signing in with no prior destination', async () => {
+    const { user } = renderRoute({ initialRoute: '/', session: null });
+
+    await screen.findByText(/enter your credentials/i);
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
+
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+  });
+
   it('shows the login-failed screen and does not create a session for bad credentials', async () => {
     const { user } = renderRoute({ initialRoute: '/', session: null });
 

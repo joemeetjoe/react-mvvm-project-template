@@ -152,4 +152,18 @@ export default tseslint.config(
       'no-restricted-imports': 'off',
     },
   },
+  {
+    // Shared code's own tests (e.g. the http wrapper) use the MSW test server
+    // the same way feature tests do.
+    files: ['src/shared/**/*.test.{ts,tsx}'],
+    rules: {
+      'boundaries/element-types': [
+        'error',
+        {
+          default: 'disallow',
+          rules: [{ from: 'shared', allow: ['shared', 'legacy', 'testing'] }],
+        },
+      ],
+    },
+  },
 );
