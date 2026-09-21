@@ -16,7 +16,7 @@ with this file, the code is wrong.
   `data-layer/entities/<entity>/`, `routes/`, and `hooks/` / `utils/` only
   when actually needed.
 - `shared/` holds `ui/` (shadcn, generated), `components/`, `hooks/`,
-  `utils/`, `lib/`, `stores/`, `testing/`.
+  `utils/`, `lib/`, `stores/`, `routing/`, `testing/`.
 - Auth is `features/auth`.
 - Dead code is **deleted**, not moved to a new folder "just in case."
 
