@@ -7,7 +7,7 @@ import {
   rootRoute,
 } from '@/infrastructure/routing/layoutRoutes';
 import { userListRoute } from '@/features/users/routes/userListRoute';
-import { usersDetailRoute } from '@/features/users/routes/detailRoute';
+import { userDetailRoute } from '@/features/users/routes/userDetailRoute';
 import { loginFailedRoute } from '@/infrastructure/routing/authRoutes';
 import type { RouterContext } from './routerContext';
 
@@ -17,7 +17,7 @@ export const routeTree = rootRoute.addChildren([
   mainLayoutRoute.addChildren([
     protectedLayoutRoute.addChildren([
       userListRoute,
-      usersDetailRoute,
+      userDetailRoute,
       // Add new feature routes here
     ]),
   ]),

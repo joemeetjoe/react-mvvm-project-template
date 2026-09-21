@@ -87,10 +87,12 @@ export default tseslint.config(
             },
             {
               // TEMPORARY: `legacy` is here only because the shadcn primitives
-              // in shared/ui still import @/infrastructure/lib/utils.
+              // in shared/ui still import @/infrastructure/lib/utils. `testing`
+              // is here so shared/components can use the custom renderer in
+              // its own colocated tests.
               from: 'shared',
-              allow: ['shared', 'legacy'],
-              message: 'shared may only import shared.',
+              allow: ['shared', 'legacy', 'testing'],
+              message: 'shared may only import shared (and its own tests).',
             },
             {
               // Test infrastructure aggregates every feature's MSW handlers and

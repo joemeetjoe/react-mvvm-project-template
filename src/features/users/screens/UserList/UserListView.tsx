@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { Link } from '@tanstack/react-router';
 
 import {
   Table,
@@ -37,7 +38,11 @@ export const UserListView = ({ users }: UserListViewProps): ReactElement => (
         ) : (
           users.map((user) => (
             <TableRow key={user.id}>
-              <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
+              <TableCell>
+                <Link to="/users/$userId" params={{ userId: user.id }}>
+                  {`${user.firstName} ${user.lastName}`}
+                </Link>
+              </TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.department}</TableCell>
               <TableCell>{user.role}</TableCell>
