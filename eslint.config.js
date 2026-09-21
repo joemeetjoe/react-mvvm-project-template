@@ -88,8 +88,8 @@ export default tseslint.config(
             {
               // TEMPORARY: `legacy` is here only because the shadcn primitives
               // in shared/ui still import @/infrastructure/lib/utils. `testing`
-              // is here so shared/components can use the custom renderer in
-              // its own colocated tests.
+              // is here because decision 10 requires every test — including a
+              // shared component's own — to go through the custom renderer.
               from: 'shared',
               allow: ['shared', 'legacy', 'testing'],
               message: 'shared may only import shared (and its own tests).',

@@ -1,56 +1,92 @@
+import { functionalUpdate } from '@tanstack/react-table';
+import type { ColumnDef, OnChangeFn, PaginationState, SortingState } from '@tanstack/react-table';
 import type { ReactElement } from 'react';
 import { Link } from '@tanstack/react-router';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/ui/table';
+import { DataTable } from '@/shared/components/DataTable';
 
-import type { User } from '../../data-layer/entities/user/userSchema';
+import type { SortDirection, User, UserSortField } from '../../data-layer/entities/user/userSchema';
 
 export type UserListViewProps = {
   users: User[];
+  total: number;
+  sort: { field: UserSortField; direction: SortDirection };
+  page: number;
+  pageSize: number;
+  isFetching: boolean;
+  onSortChange: (sort: { field: UserSortField; direction: SortDirection }) => void;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 };
 
-export const UserListView = ({ users }: UserListViewProps): ReactElement => (
-  <section className="space-y-4">
-    <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
+const pageSizeOptions = [10, 20, 50] as const;
 
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Department</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead>Status</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {users.length === 0 ? (
-          <TableRow>
-            <TableCell colSpan={5}>No users to show.</TableCell>
-          </TableRow>
-        ) : (
-          users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>
-                <Link to="/users/$userId" params={{ userId: user.id }}>
-                  {`${user.firstName} ${user.lastName}`}
-                </Link>
-              </TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.department}</TableCell>
-              <TableCell>{user.role}</TableCell>
-              <TableCell>{user.status}</TableCell>
-            </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>
-  </section>
-);
+const columns: ColumnDef<User, string>[] = [
+  {
+    id: 'firstName',
+    header: 'Name',
+    accessorFn: (user) => `${user.firstName} ${user.lastName}`,
+    cell: (info) => (
+      <Link to="/users/$userId" params={{ userId: info.row.original.id }}>
+        {info.getValue()}
+      </Link>
+    ),
+  },
+  { id: 'email', accessorKey: 'email', header: 'Email' },
+  { id: 'department', accessorKey: 'department', header: 'Department' },
+  { id: 'role', accessorKey: 'role', header: 'Role' },
+  { id: 'status', accessorKey: 'status', header: 'Status' },
+];
+
+export const UserListView = ({
+  users,
+  total,
+  sort,
+  page,
+  pageSize,
+  isFetching,
+  onSortChange,
+  onPageChange,
+  onPageSizeChange,
+}: UserListViewProps): ReactElement => {
+  const sorting: SortingState = [{ id: sort.field, desc: sort.direction === 'desc' }];
+  const pagination: PaginationState = { pageIndex: page - 1, pageSize };
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+
+  // `enableSortingRemoval: false` on the DataTable guarantees exactly one
+  // sort entry after any toggle, so `next` is never empty here.
+  const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
+    const [next] = functionalUpdate(updater, sorting);
+
+    onSortChange({ field: next.id as UserSortField, direction: next.desc ? 'desc' : 'asc' });
+  };
+
+  const handlePaginationChange: OnChangeFn<PaginationState> = (updater) => {
+    const next = functionalUpdate(updater, pagination);
+
+    if (next.pageSize !== pagination.pageSize) {
+      onPageSizeChange(next.pageSize);
+    } else {
+      onPageChange(next.pageIndex + 1);
+    }
+  };
+
+  return (
+    <section className="space-y-4">
+      <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
+
+      <DataTable
+        columns={columns}
+        data={users}
+        sorting={sorting}
+        onSortingChange={handleSortingChange}
+        pagination={pagination}
+        onPaginationChange={handlePaginationChange}
+        pageCount={pageCount}
+        pageSizeOptions={pageSizeOptions}
+        isFetching={isFetching}
+        emptyMessage="No users to show."
+      />
+    </section>
+  );
+};
