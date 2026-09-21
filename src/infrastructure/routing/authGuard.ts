@@ -1,7 +1,7 @@
 import { redirect } from '@tanstack/react-router';
 import { useAuthStore } from '@/infrastructure/stores/useAuthStore';
 
-export const authGuard = (): Record<string, never> => {
+export const authGuard = (): void => {
   const isAuthenticated = useAuthStore.getState().isAuthenticated;
 
   if (!isAuthenticated) {
@@ -9,6 +9,4 @@ export const authGuard = (): Record<string, never> => {
       to: '/',
     });
   }
-
-  return {};
 };
