@@ -32,11 +32,7 @@ export default defineConfig({
         'src/shared/lib/**/*.ts',
         'src/shared/utils/**/*.ts',
       ],
-      exclude: [
-        'src/**/*.test.{ts,tsx}',
-        // Not migrated yet; the user detail slice brings this in.
-        'src/features/*/routes/detailRoute.tsx',
-      ],
+      exclude: ['src/**/*.test.{ts,tsx}'],
       // Tiered per decision 10. shadcn (`src/shared/ui`) is never measured.
       thresholds: {
         'src/features/*/screens/**': featureTier,

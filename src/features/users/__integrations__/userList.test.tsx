@@ -71,4 +71,22 @@ describe('/users', () => {
 
     expect(await screen.findByRole('heading', { name: /not found/i })).toBeInTheDocument();
   });
+
+  it('shows the skeleton while the detail loader is pending', async () => {
+    const [user] = userFixtures;
+
+    server.use(
+      http.get('*/api/users/:id', async () => {
+        await delay(100);
+
+        return HttpResponse.json(user);
+      }),
+    );
+
+    renderRoute({ initialRoute: `/users/${user.id}` });
+
+    expect(await screen.findByLabelText('Loading user')).toBeInTheDocument();
+    expect(await screen.findByText(user.email)).toBeInTheDocument();
+    expect(screen.queryByLabelText('Loading user')).not.toBeInTheDocument();
+  });
 });
