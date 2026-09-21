@@ -89,4 +89,23 @@ describe('/users', () => {
     expect(await screen.findByText(user.email)).toBeInTheDocument();
     expect(screen.queryByLabelText('Loading user')).not.toBeInTheDocument();
   });
+
+  it('edits a user and shows the saved values immediately', async () => {
+    const [firstUser] = userFixtures;
+    const { user } = renderRoute({ initialRoute: `/users/${firstUser.id}` });
+
+    expect(await screen.findByText(firstUser.email)).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /^edit$/i }));
+
+    const firstNameInput = screen.getByLabelText('First Name');
+
+    await user.clear(firstNameInput);
+    await user.type(firstNameInput, 'Augusta');
+
+    await user.click(screen.getByRole('button', { name: /^save$/i }));
+
+    expect(await screen.findByText(`Augusta ${firstUser.lastName}`)).toBeInTheDocument();
+    expect(screen.queryByLabelText('First Name')).not.toBeInTheDocument();
+  });
 });
