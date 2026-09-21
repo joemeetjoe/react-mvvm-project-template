@@ -31,3 +31,14 @@ export type UserListResponse = z.infer<typeof userListResponseSchema>;
 export const userSortFields = ['firstName', 'email', 'department', 'role', 'status'] as const;
 export type UserSortField = (typeof userSortFields)[number];
 export type SortDirection = 'asc' | 'desc';
+
+export const userUpdateSchema = userSchema.pick({
+  firstName: true,
+  lastName: true,
+  email: true,
+  role: true,
+  status: true,
+  department: true,
+});
+
+export type UserUpdate = z.infer<typeof userUpdateSchema>;

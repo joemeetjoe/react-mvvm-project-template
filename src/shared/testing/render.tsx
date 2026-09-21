@@ -27,7 +27,7 @@ import { routeTree } from '@/app/router/router';
 
 import { type Session, applySession } from './session';
 
-export { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
+export { act, screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 
 export type UserEvent = ReturnType<typeof userEvent.setup>;
 

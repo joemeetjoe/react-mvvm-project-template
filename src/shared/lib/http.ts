@@ -54,3 +54,13 @@ export const httpPost = async (path: string, body: unknown): Promise<unknown> =>
 
   return handleResponse(response);
 };
+
+export const httpPatch = async (path: string, body: unknown): Promise<unknown> => {
+  const response = await fetch(path, {
+    method: 'PATCH',
+    headers: buildHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify(body),
+  });
+
+  return handleResponse(response);
+};

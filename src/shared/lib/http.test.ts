@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { server } from '@/shared/testing/server';
 import { useSessionStore } from '@/shared/stores/sessionStore';
 
-import { HttpError, httpGet, httpPost } from './http';
+import { HttpError, httpGet, httpPatch, httpPost } from './http';
 
 const endpoint = 'https://example.test/api/probe';
 
@@ -85,6 +85,47 @@ describe('httpPost', () => {
     server.use(http.post(endpoint, () => new HttpResponse(null, { status: 401 })));
 
     await expect(httpPost(endpoint, {})).rejects.toThrow(HttpError);
+    expect(useSessionStore.getState().token).toBeNull();
+  });
+});
+
+describe('httpPatch', () => {
+  it('sends the body as JSON and returns the parsed response', async () => {
+    server.use(http.patch(endpoint, async ({ request }) => HttpResponse.json(await request.json())));
+
+    await expect(httpPatch(endpoint, { department: 'Product' })).resolves.toEqual({
+      department: 'Product',
+    });
+  });
+
+  it('attaches the session token as a bearer header when one is set', async () => {
+    useSessionStore
+      .getState()
+      .setSession({ id: '1', email: 'admin@example.com', name: 'Admin User', role: 'admin' }, 'test-token');
+
+    server.use(
+      http.patch(endpoint, ({ request }) =>
+        HttpResponse.json({ authorization: request.headers.get('authorization') }),
+      ),
+    );
+
+    await expect(httpPatch(endpoint, {})).resolves.toEqual({ authorization: 'Bearer test-token' });
+  });
+
+  it('throws an HttpError when the response is not ok', async () => {
+    server.use(http.patch(endpoint, () => new HttpResponse(null, { status: 400 })));
+
+    await expect(httpPatch(endpoint, {})).rejects.toThrow(HttpError);
+  });
+
+  it('clears the session when the response is a 401', async () => {
+    useSessionStore
+      .getState()
+      .setSession({ id: '1', email: 'admin@example.com', name: 'Admin User', role: 'admin' }, 'test-token');
+
+    server.use(http.patch(endpoint, () => new HttpResponse(null, { status: 401 })));
+
+    await expect(httpPatch(endpoint, {})).rejects.toThrow(HttpError);
     expect(useSessionStore.getState().token).toBeNull();
   });
 });
