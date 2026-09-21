@@ -139,6 +139,56 @@ describe('/users', () => {
     expect(screen.queryByText(/something went wrong/i)).not.toBeInTheDocument();
   });
 
+  it('filters the list by role through the UI and updates the URL', async () => {
+    const { user, router } = renderRoute({ initialRoute: '/users' });
+
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+
+    await user.selectOptions(screen.getByLabelText('Role'), 'admin');
+    await user.click(screen.getByRole('button', { name: /apply filters/i }));
+
+    await waitFor(() => {
+      expect(router.state.location.search).toMatchObject({ role: 'admin', page: 1 });
+    });
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+    expect(screen.queryByRole('row', { name: /Grace Hopper/ })).not.toBeInTheDocument();
+  });
+
+  it('filters the list by a search term through the UI', async () => {
+    const { user } = renderRoute({ initialRoute: '/users' });
+
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+
+    await user.type(screen.getByLabelText('Search'), 'grace');
+    await user.click(screen.getByRole('button', { name: /apply filters/i }));
+
+    expect(await screen.findByRole('row', { name: /Grace Hopper/ })).toBeInTheDocument();
+    expect(screen.queryByRole('row', { name: /Ada Lovelace/ })).not.toBeInTheDocument();
+  });
+
+  it('clears filters through the UI and restores the full list', async () => {
+    const { user, router } = renderRoute({ initialRoute: '/users?role=admin' });
+
+    expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
+    expect(screen.queryByRole('row', { name: /Grace Hopper/ })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /clear filters/i }));
+
+    await waitFor(() => {
+      expect(router.state.location.search).toMatchObject({ role: '', page: 1 });
+    });
+    expect(await screen.findByRole('row', { name: /Grace Hopper/ })).toBeInTheDocument();
+    expect(screen.getByLabelText('Role')).toHaveValue('');
+  });
+
+  it('loading a URL with filters applied shows the filtered list with the form pre-filled', async () => {
+    renderRoute({ initialRoute: '/users?search=grace' });
+
+    expect(await screen.findByRole('row', { name: /Grace Hopper/ })).toBeInTheDocument();
+    expect(screen.queryByRole('row', { name: /Ada Lovelace/ })).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Search')).toHaveValue('grace');
+  });
+
   it('preserves list state across back and forward navigation', async () => {
     const { user, router } = renderRoute({ initialRoute: '/users' });
 

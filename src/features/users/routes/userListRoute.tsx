@@ -4,8 +4,11 @@ import { z } from 'zod';
 import { RouteErrorBoundary } from '@/infrastructure/routing/RouteErrorBoundary';
 import { protectedLayoutRoute } from '@/infrastructure/routing/layoutRoutes';
 
-import { userSortFields } from '../data-layer/entities/user/userSchema';
-import { userListQueryOptions } from '../data-layer/entities/user/userQueries';
+import { userRoles, userSortFields, userStatuses } from '../data-layer/entities/user/userSchema';
+import {
+  userFilterOptionsQueryOptions,
+  userListQueryOptions,
+} from '../data-layer/entities/user/userQueries';
 import { UserList } from '../screens/UserList';
 import { UserListSkeleton } from '../screens/UserList/UserListSkeleton';
 
@@ -22,6 +25,12 @@ export const userListSearchSchema = z.object({
     .int()
     .refine((size) => (userListPageSizes as readonly number[]).includes(size))
     .catch(10),
+  // Filters (issue #6). An empty string means "no filter applied" so the URL
+  // always carries the same keys, matching sort/direction/page/pageSize above.
+  search: z.string().catch(''),
+  role: z.union([z.enum(userRoles), z.literal('')]).catch(''),
+  status: z.union([z.enum(userStatuses), z.literal('')]).catch(''),
+  department: z.string().catch(''),
 });
 
 // A function wrapper (rather than passing the zod object directly) so the
@@ -36,7 +45,10 @@ export const userListRoute = createRoute({
   validateSearch: validateUserListSearch,
   loaderDeps: ({ search }) => search,
   loader: async ({ context, deps }): Promise<void> => {
-    await context.queryClient.ensureQueryData(userListQueryOptions(deps));
+    await Promise.all([
+      context.queryClient.ensureQueryData(userListQueryOptions(deps)),
+      context.queryClient.ensureQueryData(userFilterOptionsQueryOptions()),
+    ]);
   },
   // Show the skeleton as soon as the loader is in flight rather than after the
   // router's default 1s grace period.

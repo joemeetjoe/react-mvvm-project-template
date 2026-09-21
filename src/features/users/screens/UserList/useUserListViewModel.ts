@@ -1,9 +1,15 @@
+import { useEffect } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getRouteApi } from '@tanstack/react-router';
 
-import { userListQueryOptions } from '../../data-layer/entities/user/userQueries';
+import {
+  userFilterOptionsQueryOptions,
+  userListQueryOptions,
+} from '../../data-layer/entities/user/userQueries';
 import type { SortDirection, UserSortField } from '../../data-layer/entities/user/userSchema';
 import type { UserListViewProps } from './UserListView';
+import { emptyUserFilterFormValues, useUserFilterForm } from './useUserFilterForm';
+import type { UserFilterFormValues } from './useUserFilterForm';
 
 const routeApi = getRouteApi('/mainLayout/protectedLayout/users');
 
@@ -11,6 +17,7 @@ export const useUserListViewModel = (): UserListViewProps => {
   const search = routeApi.useSearch();
   const navigate = routeApi.useNavigate();
   const { data, isFetching } = useSuspenseQuery(userListQueryOptions(search));
+  const { data: filterOptions } = useSuspenseQuery(userFilterOptionsQueryOptions());
 
   const onSortChange = (sort: { field: UserSortField; direction: SortDirection }): void => {
     navigate({
@@ -26,6 +33,50 @@ export const useUserListViewModel = (): UserListViewProps => {
     navigate({ search: (prev) => ({ ...prev, pageSize, page: 1 }) });
   };
 
+  const filterDefaults: UserFilterFormValues = {
+    search: search.search,
+    role: search.role,
+    status: search.status,
+    department: search.department,
+  };
+
+  const onFilterSubmit = (values: UserFilterFormValues): void => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        search: values.search,
+        role: values.role,
+        status: values.status,
+        department: values.department,
+        page: 1,
+      }),
+    });
+  };
+
+  const form = useUserFilterForm(filterDefaults, onFilterSubmit);
+
+  // Keeps the draft form in sync with the URL when it changes from outside a
+  // submission (e.g. browser back/forward), the accepted cost of decision 4.
+  useEffect(() => {
+    form.reset(filterDefaults);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.search, search.role, search.status, search.department]);
+
+  const hasActiveFilters = Boolean(
+    search.search || search.role || search.status || search.department,
+  );
+
+  const onClearFilters = (): void => {
+    form.reset(emptyUserFilterFormValues);
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        ...emptyUserFilterFormValues,
+        page: 1,
+      }),
+    });
+  };
+
   return {
     users: data.users,
     total: data.total,
@@ -36,5 +87,9 @@ export const useUserListViewModel = (): UserListViewProps => {
     onSortChange,
     onPageChange,
     onPageSizeChange,
+    form,
+    filterOptions,
+    hasActiveFilters,
+    onClearFilters,
   };
 };
