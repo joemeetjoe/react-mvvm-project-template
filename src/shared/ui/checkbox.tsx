@@ -12,13 +12,13 @@ const checkboxVariants = cva(
       variants: {
         variant: {
           default:
-              "border-primary api-[state=checked]:bg-primary api-[state=checked]:text-primary-foreground",
+              "border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
           destructive:
-              "border-destructive api-[state=checked]:bg-destructive api-[state=checked]:text-destructive-foreground",
+              "border-destructive data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground",
           outline:
-              "border-input api-[state=checked]:border-primary api-[state=checked]:bg-primary api-[state=checked]:text-primary-foreground",
+              "border-input data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
           secondary:
-              "border-secondary api-[state=checked]:bg-secondary api-[state=checked]:text-secondary-foreground",
+              "border-secondary data-[state=checked]:bg-secondary data-[state=checked]:text-secondary-foreground",
           skeleton: "skeleton"
         },
         size: {

@@ -144,7 +144,8 @@ describe('/users', () => {
 
     expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
 
-    await user.selectOptions(screen.getByLabelText('Role'), 'admin');
+    await user.click(screen.getByLabelText('Role'));
+    await user.click(await screen.findByRole('option', { name: 'admin' }));
     await user.click(screen.getByRole('button', { name: /apply filters/i }));
 
     await waitFor(() => {
@@ -178,7 +179,7 @@ describe('/users', () => {
       expect(router.state.location.search).toMatchObject({ role: '', page: 1 });
     });
     expect(await screen.findByRole('row', { name: /Grace Hopper/ })).toBeInTheDocument();
-    expect(screen.getByLabelText('Role')).toHaveValue('');
+    expect(screen.getByLabelText('Role')).toHaveTextContent('All Role');
   });
 
   it('loading a URL with filters applied shows the filtered list with the form pre-filled', async () => {

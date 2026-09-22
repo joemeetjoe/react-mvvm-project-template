@@ -143,7 +143,8 @@ describe('DataTable', () => {
       />,
     );
 
-    await user.selectOptions(screen.getByLabelText('Rows per page'), '20');
+    await user.click(screen.getByLabelText('Rows per page'));
+    await user.click(await screen.findByRole('option', { name: '20' }));
 
     const updater = onPaginationChange.mock.calls[0]?.[0];
     const next = typeof updater === 'function' ? updater({ pageIndex: 1, pageSize: 10 }) : updater;

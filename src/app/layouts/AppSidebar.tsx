@@ -13,6 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
   useSidebar,
   SidebarTrigger,
   SidebarFooter,
@@ -119,16 +120,18 @@ const ContentSidebar = ({
 
   return (
     <Sidebar collapsible="none" className="hidden flex-1 md:flex">
-      <SidebarHeader className="gap-3.5 border-b p-4">
+      <SidebarHeader>
         <div className="flex w-full items-center justify-between">
-          <div className="text-base font-medium text-foreground">
-            {activeItem?.title}
-          </div>
+          <Label>{activeItem?.title}</Label>
           {activeItem.showFilter && (
-            <Label className="flex items-center gap-2 text-sm">
-              <span>{activeItem.filterLabel || 'Filter'}</span>
-              <Switch className="shadow-none" checked={filterEnabled} onCheckedChange={setFilterEnabled} />
-            </Label>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="content-filter">{activeItem.filterLabel || 'Filter'}</Label>
+              <Switch
+                id="content-filter"
+                checked={filterEnabled}
+                onCheckedChange={setFilterEnabled}
+              />
+            </div>
           )}
         </div>
         <SidebarInput
@@ -137,13 +140,12 @@ const ContentSidebar = ({
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </SidebarHeader>
+      <SidebarSeparator />
       <SidebarContent>
         <ScrollArea className="h-full">
-          <SidebarGroup className="px-0">
+          <SidebarGroup>
             <SidebarGroupContent>
-              <div className="p-4 text-sm text-muted-foreground">
-                {activeItem.title} content
-              </div>
+              <div className="p-2 text-muted-foreground">{activeItem.title} content</div>
             </SidebarGroupContent>
           </SidebarGroup>
         </ScrollArea>

@@ -3,6 +3,14 @@ import type { ColumnDef, OnChangeFn, PaginationState, SortingState } from '@tans
 import type { ReactElement } from 'react';
 
 import { Button } from '@/shared/ui/button';
+import { Label } from '@/shared/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui/select';
 import {
   Table,
   TableBody,
@@ -118,25 +126,28 @@ export const DataTable = <TData,>({
 
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <label htmlFor="data-table-page-size" className="text-sm text-muted-foreground">
-            Rows per page
-          </label>
-          <select
-            id="data-table-page-size"
-            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-            value={pagination.pageSize}
-            onChange={(event) => {
-              const pageSize = Number(event.target.value);
+          <Label htmlFor="data-table-page-size">Rows per page</Label>
+          <div className="w-20">
+            <Select
+              value={String(pagination.pageSize)}
+              onValueChange={(value) => {
+                const pageSize = Number(value);
 
-              onPaginationChange((old) => ({ ...old, pageIndex: 0, pageSize }));
-            }}
-          >
-            {pageSizeOptions.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
+                onPaginationChange((old) => ({ ...old, pageIndex: 0, pageSize }));
+              }}
+            >
+              <SelectTrigger id="data-table-page-size">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {pageSizeOptions.map((size) => (
+                  <SelectItem key={size} value={String(size)}>
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

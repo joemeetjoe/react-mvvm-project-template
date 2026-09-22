@@ -4,6 +4,13 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui/select';
 
 export type FilterFieldOption = {
   value: string;
@@ -25,11 +32,15 @@ export type FilterCardProps = {
 };
 
 /**
- * A prop-driven filter form: fields, values and buttons all arrive as props
- * (issue #6). It knows nothing about users, queries or the router — the
- * ViewModel owns the actual filter state (a TanStack Form) and bridges its
- * draft values into these plain props.
+ * Radix Select forbids an item whose value is the empty string, so the "all"
+ * item carries this sentinel inside the component and is translated back to
+ * `''` at the prop boundary. Callers only ever see `''`.
  */
+const ALL_VALUE = '__all__';
+
+const toSelectValue = (value: string | undefined): string => value || ALL_VALUE;
+const fromSelectValue = (value: string): string => (value === ALL_VALUE ? '' : value);
+
 export const FilterCard = ({
   fields,
   values,
@@ -40,16 +51,16 @@ export const FilterCard = ({
   isSubmitDisabled = false,
 }: FilterCardProps): ReactElement => (
   <Card>
-    <CardContent className="pt-6">
+    <CardContent>
       <form
-        className="flex flex-wrap items-end gap-4"
+        className="flex flex-wrap items-end gap-4 pt-6"
         onSubmit={(event) => {
           event.preventDefault();
           onSubmit();
         }}
       >
         {fields.map((field) => (
-          <div key={field.id} className="flex flex-col gap-1.5">
+          <div key={field.id} className="flex min-w-40 flex-col gap-1.5">
             <Label htmlFor={field.id}>{field.label}</Label>
             {field.kind === 'text' ? (
               <Input
@@ -59,19 +70,22 @@ export const FilterCard = ({
                 onChange={(event) => onValueChange(field.id, event.target.value)}
               />
             ) : (
-              <select
-                id={field.id}
-                className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-                value={values[field.id] ?? ''}
-                onChange={(event) => onValueChange(field.id, event.target.value)}
+              <Select
+                value={toSelectValue(values[field.id])}
+                onValueChange={(value) => onValueChange(field.id, fromSelectValue(value))}
               >
-                <option value="">{field.allLabel ?? `All ${field.label}`}</option>
-                {field.options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger id={field.id}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL_VALUE}>{field.allLabel ?? `All ${field.label}`}</SelectItem>
+                  {field.options.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           </div>
         ))}

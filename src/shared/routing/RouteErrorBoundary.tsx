@@ -1,6 +1,16 @@
 import * as React from 'react';
 import { useRouter } from '@tanstack/react-router';
 
+import { Button } from '@/shared/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/card';
+
 interface RouteErrorBoundaryProps {
   error: Error;
 }
@@ -49,36 +59,31 @@ export const RouteErrorBoundary: React.FC<RouteErrorBoundaryProps> = ({ error })
   const errorInfo = getErrorInfo(error);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] p-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">{errorInfo.title}</h1>
-      <p className="text-gray-600 mb-6 text-center max-w-md">{errorInfo.description}</p>
-      <div className="flex gap-3">
-        <button
-          onClick={handleGoBack}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Go Back
-        </button>
-        {errorInfo.showRetry && (
-          <button
-            onClick={handleRetry}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
-          >
-            Retry
-          </button>
+    <div className="flex min-h-96 items-center justify-center p-8">
+      <Card className="w-full max-w-lg">
+        <CardHeader>
+          <CardTitle role="heading" aria-level={1}>
+            {errorInfo.title}
+          </CardTitle>
+          <CardDescription>{errorInfo.description}</CardDescription>
+        </CardHeader>
+        {import.meta.env.DEV && (
+          <CardContent>
+            <pre className="overflow-auto">{error.stack}</pre>
+          </CardContent>
         )}
-        <button
-          onClick={handleGoHome}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Go Home
-        </button>
-      </div>
-      {import.meta.env.DEV && (
-        <pre className="mt-6 p-4 bg-gray-100 rounded text-xs text-gray-600 max-w-lg overflow-auto">
-          {error.stack}
-        </pre>
-      )}
+        <CardFooter>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={handleGoBack}>
+              Go Back
+            </Button>
+            {errorInfo.showRetry && <Button onClick={handleRetry}>Retry</Button>}
+            <Button variant="outline" onClick={handleGoHome}>
+              Go Home
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

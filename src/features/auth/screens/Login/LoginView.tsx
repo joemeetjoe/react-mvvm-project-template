@@ -37,37 +37,39 @@ export const LoginView = ({
   return (
     <div className="w-full max-w-md">
       <Card>
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
-          <CardDescription className="text-center">
-            Enter your credentials to access the application
-          </CardDescription>
+        <CardHeader className="items-center">
+          <CardTitle>Sign In</CardTitle>
+          <CardDescription>Enter your credentials to access the application</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(event: ChangeEvent<HTMLInputElement>) => onEmailChange(event.target.value)}
-                required
-              />
+          <CardContent>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => onEmailChange(event.target.value)}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                    onPasswordChange(event.target.value)
+                  }
+                  required
+                />
+              </div>
+              <CardDescription>
+                Mock auth: use admin@example.com or user@example.com with any password.
+              </CardDescription>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(event: ChangeEvent<HTMLInputElement>) => onPasswordChange(event.target.value)}
-                required
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Mock auth: use admin@example.com or user@example.com with any password.
-            </p>
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
