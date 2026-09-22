@@ -1,9 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useState } from 'react';
 
+import { isApiMocked } from '@/shared/lib/env';
+
+import { demoLoginCredentials, demoLoginHint } from '../../data-layer/entities/session/sessionFixtures';
 import { sessionMutations } from '../../data-layer/entities/session/sessionQueries';
 import type { LoginViewProps } from './LoginView';
+import { emptyLoginCredentials, useLoginForm } from './useLoginForm';
 
 const defaultLandingHref = '/users';
 
@@ -13,32 +16,25 @@ export const useLoginViewModel = (): LoginViewProps => {
   // (shared/testing/render), which does not know this app's real route ids.
   const { redirect } = useSearch({ strict: false });
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState('admin@example.com');
-  const [password, setPassword] = useState('password');
-
   const loginMutation = useMutation(sessionMutations.login());
 
-  const handleSubmit = (): void => {
-    loginMutation.mutate(
-      { email, password },
-      {
-        onSuccess: () => {
-          void navigate({ href: redirect ?? defaultLandingHref });
-        },
-        onError: () => {
-          void navigate({ to: '/login-failed', search: { redirect } });
-        },
+  // Demo credentials exist only while the MSW worker answers the API.
+  const isMocked = isApiMocked();
+
+  const form = useLoginForm(isMocked ? demoLoginCredentials : emptyLoginCredentials, (credentials) => {
+    loginMutation.mutate(credentials, {
+      onSuccess: () => {
+        void navigate({ href: redirect ?? defaultLandingHref });
       },
-    );
-  };
+      onError: () => {
+        void navigate({ to: '/login-failed', search: { redirect } });
+      },
+    });
+  });
 
   return {
-    email,
-    password,
+    form,
     isSubmitting: loginMutation.isPending,
-    onEmailChange: setEmail,
-    onPasswordChange: setPassword,
-    onSubmit: handleSubmit,
+    hint: isMocked ? demoLoginHint : undefined,
   };
 };

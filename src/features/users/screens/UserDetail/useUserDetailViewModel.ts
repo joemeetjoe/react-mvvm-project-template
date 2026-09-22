@@ -3,14 +3,16 @@ import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-q
 import { useRouter } from '@tanstack/react-router';
 
 import { userDetailQueryOptions, userUpdateMutationOptions } from '../../data-layer/entities/user/userQueries';
-import type { User, UserUpdate } from '../../data-layer/entities/user/userSchema';
+import { userRoles, userStatuses } from '../../data-layer/entities/user/userSchema';
+import type { User } from '../../data-layer/entities/user/userSchema';
 import type { UserDetailViewProps } from './UserDetailView';
 import { useUserEditForm } from './useUserEditForm';
+import type { UserUpdateDraft } from './useUserEditForm';
 
 /** Keeps dates readable without depending on the viewer's locale in tests. */
 const formatDate = (value: string): string => value.slice(0, 10);
 
-const toFormValues = (user: User): UserUpdate => ({
+const toFormValues = (user: User): UserUpdateDraft => ({
   firstName: user.firstName,
   lastName: user.lastName,
   email: user.email,
@@ -82,6 +84,8 @@ export const useUserDetailViewModel = (userId: string): UserDetailViewProps => {
     isSaving: mutation.isPending,
     saveError: mutation.isError ? mutation.error.message : null,
     form,
+    roleOptions: userRoles,
+    statusOptions: userStatuses,
     onBack: () => router.history.back(),
     onEdit: handleEdit,
     onCancel: handleCancel,

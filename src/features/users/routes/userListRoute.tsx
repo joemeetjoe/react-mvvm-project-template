@@ -3,7 +3,11 @@ import { z } from 'zod';
 
 import { RouteErrorBoundary } from '@/shared/routing/RouteErrorBoundary';
 
-import { userRoles, userSortFields, userStatuses } from '../data-layer/entities/user/userSchema';
+import {
+  userListFilterSchema,
+  userListPageSizes,
+  userSortFields,
+} from '../data-layer/entities/user/userSchema';
 import {
   userFilterOptionsQueryOptions,
   userListQueryOptions,
@@ -11,26 +15,20 @@ import {
 import { UserList } from '../screens/UserList';
 import { UserListSkeleton } from '../screens/UserList/UserListSkeleton';
 
-export const userListPageSizes = [10, 20, 50] as const;
-
 // List state lives in URL search params. Anything invalid falls
 // back to the default instead of erroring, so a bad or stale link still works.
-export const userListSearchSchema = z.object({
-  sort: z.enum(userSortFields).catch('firstName'),
-  direction: z.enum(['asc', 'desc']).catch('asc'),
-  page: z.coerce.number().int().min(1).catch(1),
-  pageSize: z.coerce
-    .number()
-    .int()
-    .refine((size) => (userListPageSizes as readonly number[]).includes(size))
-    .catch(10),
-  // Filters. An empty string means "no filter applied" so the URL
-  // always carries the same keys, matching sort/direction/page/pageSize above.
-  search: z.string().catch(''),
-  role: z.union([z.enum(userRoles), z.literal('')]).catch(''),
-  status: z.union([z.enum(userStatuses), z.literal('')]).catch(''),
-  department: z.string().catch(''),
-});
+export const userListSearchSchema = z
+  .object({
+    sort: z.enum(userSortFields).catch('firstName'),
+    direction: z.enum(['asc', 'desc']).catch('asc'),
+    page: z.coerce.number().int().min(1).catch(1),
+    pageSize: z.coerce
+      .number()
+      .int()
+      .refine((size) => (userListPageSizes as readonly number[]).includes(size))
+      .catch(10),
+  })
+  .merge(userListFilterSchema);
 
 // A function wrapper (rather than passing the zod object directly) so the
 // ViewModel test's host router (`shared/testing/render`) can reuse the exact

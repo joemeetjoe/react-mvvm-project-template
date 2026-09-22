@@ -5,25 +5,7 @@ const setupWorker = vi.fn().mockReturnValue({ start });
 
 vi.mock('msw/browser', () => ({ setupWorker }));
 
-import { enableMocking, shouldEnableMocking } from './enableMocking';
-
-describe('shouldEnableMocking', () => {
-  it('is false outside of development, even with the flag on', () => {
-    expect(shouldEnableMocking({ DEV: false, VITE_API_MOCK: 'true' })).toBe(false);
-  });
-
-  it('is false in development when the flag is unset', () => {
-    expect(shouldEnableMocking({ DEV: true, VITE_API_MOCK: undefined })).toBe(false);
-  });
-
-  it('is false in development when the flag is not exactly "true"', () => {
-    expect(shouldEnableMocking({ DEV: true, VITE_API_MOCK: '1' })).toBe(false);
-  });
-
-  it('is true in development when the flag is "true"', () => {
-    expect(shouldEnableMocking({ DEV: true, VITE_API_MOCK: 'true' })).toBe(true);
-  });
-});
+import { enableMocking } from './enableMocking';
 
 describe('enableMocking', () => {
   beforeEach(() => {

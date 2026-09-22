@@ -15,8 +15,10 @@ with this file, the code is wrong.
 - Each feature (`features/<name>/`) uses: `screens/`, `components/`,
   `data-layer/entities/<entity>/`, `routes/`, and `hooks/` / `utils/` only
   when actually needed.
-- `shared/` holds `ui/` (shadcn, generated), `components/`, `hooks/`,
-  `utils/`, `lib/`, `stores/`, `routing/`, `testing/`.
+- `shared/` holds `ui/` (shadcn, generated, including its hooks under
+  `ui/hooks/`), `components/`, `utils/`, `lib/`, `stores/`, `routing/`,
+  `testing/`. A `shared/hooks/` folder is created only when a hand-written
+  hook actually needs it.
 - Auth is `features/auth`.
 - Dead code is **deleted**, not moved to a new folder "just in case."
 
@@ -41,23 +43,30 @@ with this file, the code is wrong.
    rendering machinery driven entirely by props (e.g. `useReactTable` inside
    the shared table), `<Link>`, and `import type` from the data-layer.
    Forbidden in a View: TanStack Query, router hooks, zustand stores, any
-   runtime (non-type) data-layer import, and any `use*ViewModel` hook.
-   Enforced with `no-restricted-imports` scoped to View files and
-   `shared/components`.
+   runtime (non-type) data-layer import, any `use*ViewModel` hook, runtime
+   TanStack Form or `use*Form` imports, zod, the HTTP client, and the
+   `fetch`/storage/`window`/`document` globals. Enforced with
+   `no-restricted-imports` and `no-restricted-globals` scoped to View files
+   and `shared/components`. Pure, prop-driven adaptation to a rendering
+   library (the Radix Select sentinel in `FilterCard`) belongs in the
+   component. Anything that needs a cast at the View boundary is a contract
+   bug in the props or the form hook and is fixed there, never with `as`.
 4. **The View owns a flat props type**, exported as `{Name}ViewProps`. The
    ViewModel's return type must equal that type via a type-only import, so
    contract drift is a compile error.
 5. Props are flat: nouns for data, `isX` for booleans, `onX` for handlers. A
    form crosses the boundary as a single `form` prop, typed from a small
-   colocated form hook.
+   colocated form hook. Draft form values are plain `string`s; the form
+   hook's zod schema validates them and parses them on submit. The View
+   never narrows a widget value.
 6. Optimistic update and rollback live in the entity's mutation options, not
    in the ViewModel.
 7. The route owns loading and error, not the View or ViewModel (see below).
 8. No ViewModel context/provider distributing a ViewModel to multiple
    consumers — one hook call per screen.
 9. Screens are hand-written over prop-driven presentational components in
-   `shared/components` and small composable hooks in `shared/hooks`. No
-   templates, no config-driven layer.
+   `shared/components` and small composable hooks. No templates, no
+   config-driven layer.
 
 ## Routes own loading and error
 
@@ -69,6 +78,9 @@ with this file, the code is wrong.
   route's error component catches fetch/parse failures.
 - Mutation-in-flight flags (`isSaving`, `saveError`, etc.) remain ordinary
   props from the ViewModel — they are not route-level concerns.
+- Query flags such as `isFetching` are **not** View props. The loader re-runs
+  on every `loaderDeps` change and the route shows its skeleton, so the View
+  never needs a refetch indicator.
 - The query client is provided through router context.
 
 ## Naming conventions
@@ -82,7 +94,9 @@ with this file, the code is wrong.
 - Tests are colocated as `*.test.ts` / `*.test.tsx`.
 - Types are plain PascalCase — **no `I` or `T` prefix**.
 - Zod schemas are camelCase.
-- shadcn-generated files under `shared/ui/` are left exactly as generated.
+- shadcn-generated files under `shared/ui/` (components and `ui/hooks/`) are
+  left exactly as generated; `components.json` points shadcn's hook output
+  there.
 - Imports are relative inside a feature, `@/`-aliased across roots. No
   barrels beyond a component's own `index.tsx`.
 

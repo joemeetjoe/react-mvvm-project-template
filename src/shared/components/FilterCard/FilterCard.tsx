@@ -17,14 +17,16 @@ export type FilterFieldOption = {
   label: string;
 };
 
-export type FilterFieldConfig =
-  | { id: string; label: string; kind: 'text'; placeholder?: string }
-  | { id: string; label: string; kind: 'select'; options: FilterFieldOption[]; allLabel?: string };
+// `TId` is the union of field ids a caller declares, so `values` and
+// `onValueChange` are checked against the same keys as `fields`.
+export type FilterFieldConfig<TId extends string = string> =
+  | { id: TId; label: string; kind: 'text'; placeholder?: string }
+  | { id: TId; label: string; kind: 'select'; options: FilterFieldOption[]; allLabel?: string };
 
-export type FilterCardProps = {
-  fields: FilterFieldConfig[];
-  values: Record<string, string>;
-  onValueChange: (id: string, value: string) => void;
+export type FilterCardProps<TId extends string = string> = {
+  fields: FilterFieldConfig<TId>[];
+  values: Record<TId, string>;
+  onValueChange: (id: TId, value: string) => void;
   onSubmit: () => void;
   onClear: () => void;
   hasActiveFilters: boolean;
@@ -37,7 +39,7 @@ const ALL_VALUE = '__all__';
 const toSelectValue = (value: string | undefined): string => value || ALL_VALUE;
 const fromSelectValue = (value: string): string => (value === ALL_VALUE ? '' : value);
 
-export const FilterCard = ({
+export const FilterCard = <TId extends string = string>({
   fields,
   values,
   onValueChange,
@@ -45,7 +47,7 @@ export const FilterCard = ({
   onClear,
   hasActiveFilters,
   isSubmitDisabled = false,
-}: FilterCardProps): ReactElement => (
+}: FilterCardProps<TId>): ReactElement => (
   <Card>
     <CardContent>
       <form

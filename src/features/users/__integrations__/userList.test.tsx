@@ -218,9 +218,13 @@ describe('/users', () => {
     await user.clear(firstNameInput);
     await user.type(firstNameInput, 'Augusta');
 
+    await user.click(screen.getByLabelText('Role'));
+    await user.click(await screen.findByRole('option', { name: 'viewer' }));
+
     await user.click(screen.getByRole('button', { name: /^save$/i }));
 
     expect(await screen.findByText(`Augusta ${firstUser.lastName}`)).toBeInTheDocument();
+    expect(screen.getByText('viewer')).toBeInTheDocument();
     expect(screen.queryByLabelText('First Name')).not.toBeInTheDocument();
   });
 });

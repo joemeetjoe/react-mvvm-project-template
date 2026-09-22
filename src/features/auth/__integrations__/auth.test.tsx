@@ -3,13 +3,28 @@ import { describe, expect, it } from 'vitest';
 import { useSessionStore } from '@/shared/stores/sessionStore';
 import { renderRoute, screen } from '@/shared/testing/render';
 
+type User = ReturnType<typeof renderRoute>['user'];
+
+// Cleared first so the flow is the same whether or not the local `.env`
+// turns the demo prefill on.
+const signIn = async (user: User, email: string): Promise<void> => {
+  const emailInput = await screen.findByLabelText(/email/i);
+  const passwordInput = screen.getByLabelText(/password/i);
+
+  await user.clear(emailInput);
+  await user.type(emailInput, email);
+  await user.clear(passwordInput);
+  await user.type(passwordInput, 'any-password');
+  await user.click(screen.getByRole('button', { name: /sign in/i }));
+};
+
 describe('auth', () => {
   it('redirects an unauthenticated visitor to login, then returns them to the page they asked for', async () => {
     const { user } = renderRoute({ initialRoute: '/users', session: null });
 
     expect(await screen.findByText(/enter your credentials/i)).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: /sign in/i }));
+    await signIn(user, 'admin@example.com');
 
     expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
   });
@@ -18,7 +33,7 @@ describe('auth', () => {
     const { user } = renderRoute({ initialRoute: '/', session: null });
 
     await screen.findByText(/enter your credentials/i);
-    await user.click(screen.getByRole('button', { name: /sign in/i }));
+    await signIn(user, 'admin@example.com');
 
     expect(await screen.findByRole('row', { name: /Ada Lovelace/ })).toBeInTheDocument();
   });
@@ -26,10 +41,7 @@ describe('auth', () => {
   it('shows the login-failed screen and does not create a session for bad credentials', async () => {
     const { user } = renderRoute({ initialRoute: '/', session: null });
 
-    const emailInput = await screen.findByLabelText(/email/i);
-    await user.clear(emailInput);
-    await user.type(emailInput, 'nobody@example.com');
-    await user.click(screen.getByRole('button', { name: /sign in/i }));
+    await signIn(user, 'nobody@example.com');
 
     expect(await screen.findByText(/authentication failed/i)).toBeInTheDocument();
     expect(useSessionStore.getState().token).toBeNull();

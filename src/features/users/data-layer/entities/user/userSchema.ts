@@ -42,6 +42,28 @@ export const userSortFields = ['firstName', 'email', 'department', 'role', 'stat
 export type UserSortField = (typeof userSortFields)[number];
 export type SortDirection = 'asc' | 'desc';
 
+// The page sizes the users list can be shown in.
+export const userListPageSizes = [10, 20, 50] as const;
+export type UserListPageSize = (typeof userListPageSizes)[number];
+
+// The filters the users list carries in its URL. An empty string means "no
+// filter applied" so the URL always has the same keys, and anything invalid
+// falls back to it so a bad or stale link still works.
+export const userListFilterSchema = z.object({
+  search: z.string().catch(''),
+  role: z.union([z.enum(userRoles), z.literal('')]).catch(''),
+  status: z.union([z.enum(userStatuses), z.literal('')]).catch(''),
+  department: z.string().catch(''),
+});
+export type UserListFilter = z.infer<typeof userListFilterSchema>;
+
+export const emptyUserListFilter: UserListFilter = {
+  search: '',
+  role: '',
+  status: '',
+  department: '',
+};
+
 export const userUpdateSchema = userSchema.pick({
   firstName: true,
   lastName: true,

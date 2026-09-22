@@ -21,13 +21,13 @@ A separate `e2e` CI job runs the Playwright smoke suite (`npm run test:e2e`) alo
 
 ## The `new-feature` scaffolder
 
-`npm run new-feature` (Plop; `plopfile.js` and `plop-templates/new-feature/`) generates
+`npm run new-feature` (Plop; `plop-templates/plopfile.js` and `plop-templates/new-feature/`) generates
 the skeleton described in the [README walkthrough](README.md#adding-a-feature-a-worked-walkthrough):
 the entity's data-layer, a read-only list screen, a route factory, and a failing
 integration test, and wires the route/handlers/sidebar registration points via the
 `// plop:...` anchor comments in `src/app/router/router.tsx`, `src/app/mocks/handlers.ts`,
 `src/shared/testing/server.ts`, and `src/app/layouts/sidebarConfig.ts`. **Any change to
-a template under `plop-templates/new-feature/` or to `plopfile.js` must keep
+a template under `plop-templates/new-feature/` or to `plop-templates/plopfile.js` must keep
 `npm run test:scaffolder` green** — it is the acceptance check: it generates a sample
 feature, asserts it lints and typechecks, and asserts its integration test fails for the
 right reason (the placeholder screen, not a compile/import error), then cleans up. It's
@@ -67,7 +67,7 @@ step after `validate`.
   (`shared/testing/server.ts`) and the dev-mode MSW worker (`app/mocks/handlers.ts`).
   A handler that mutates state (e.g. `userHandlers.ts`'s PATCH) exports a reset
   function (`resetUserFixtures`) to call between tests.
-- **Coverage is tiered** (`vitest.config.ts`, `coverage.thresholds`):
+- **Coverage is tiered** (`vite.config.ts`, `coverage.thresholds`):
   `src/app/**` 80%, `src/features/**` 80%, `src/features/*/data-layer/**` 100%,
   `src/shared/components/**` / `src/shared/hooks/**` / `src/shared/routing/**` 90%,
   `src/shared/lib/**` / `src/shared/utils/**` / `src/shared/stores/**` 100%,
@@ -87,7 +87,7 @@ test server) serve data, does a full-page reload/login/logout cycle behave. Reac
 an e2e test only when the thing you're proving is boot- or routing-level, not a new
 business rule — if you're tempted to add a second e2e test to cover a variant (a filter
 combination, a validation error, a role), that variant belongs in an integration test
-instead, and the smoke suite (`playwright.config.ts`, `testDir: e2e`) stays small on
+instead, and the smoke suite (`e2e/playwright.config.ts`, `testDir: e2e`) stays small on
 purpose. Run it locally with `npm run test:e2e` (chromium, firefox, and webkit); it
 runs in CI as its own job, separate from `validate`.
 

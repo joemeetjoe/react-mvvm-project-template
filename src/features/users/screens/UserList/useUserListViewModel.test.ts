@@ -129,6 +129,34 @@ describe('useUserListViewModel', () => {
     expect(result.current?.users.every((candidate) => candidate.role === 'admin')).toBe(true);
   });
 
+  it('submits an unknown role as "no filter" instead of writing it to the URL', async () => {
+    const { result } = setup('/users');
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    result.current?.form.setFieldValue('role', 'wizard');
+    result.current?.form.setFieldValue('search', 'ada');
+    await result.current?.form.handleSubmit();
+
+    await waitFor(() => {
+      expect(result.current?.hasActiveFilters).toBe(true);
+    });
+    expect(result.current?.form.state.values.role).toBe('');
+    expect(result.current?.form.state.values.search).toBe('ada');
+  });
+
+  it('exposes the page sizes the route accepts', async () => {
+    const { result } = setup('/users');
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    expect(result.current?.pageSizeOptions).toEqual([10, 20, 50]);
+  });
+
   it('clearing filters removes them from the URL, resets the form, and resets to page 1', async () => {
     const { result } = setup('/users?role=admin&page=2');
 

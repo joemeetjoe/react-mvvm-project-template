@@ -114,6 +114,16 @@ export default tseslint.config(
               allowImportNames: ['Link'],
               message: `${viewRuleMessage} Only <Link> may be imported from the router.`,
             },
+            {
+              name: '@tanstack/react-form',
+              allowTypeImports: true,
+              message: `${viewRuleMessage} A form crosses the boundary as a single \`form\` prop from the colocated form hook.`,
+            },
+            {
+              name: 'zod',
+              allowTypeImports: true,
+              message: `${viewRuleMessage} Validation and parsing belong in the form hook or the data-layer.`,
+            },
           ],
           patterns: [
             {
@@ -126,11 +136,27 @@ export default tseslint.config(
               message: `${viewRuleMessage} The screen's index.tsx calls the ViewModel, not the View.`,
             },
             {
+              group: ['**/use*Form', '**/use*Form.*'],
+              allowTypeImports: true,
+              message: `${viewRuleMessage} The ViewModel calls the form hook and passes the form in as a prop.`,
+            },
+            {
               group: ['**/stores/*', '**/stores/**'],
               message: `${viewRuleMessage} Store state reaches a View as a prop.`,
             },
+            {
+              group: ['**/lib/http', '**/lib/parseResponse'],
+              message: `${viewRuleMessage} Only the data-layer talks to the network.`,
+            },
           ],
         },
+      ],
+      'no-restricted-globals': [
+        'error',
+        ...['fetch', 'localStorage', 'sessionStorage', 'window', 'document'].map((name) => ({
+          name,
+          message: viewRuleMessage,
+        })),
       ],
     },
   },
@@ -158,14 +184,6 @@ export default tseslint.config(
       'shadcn/no-restyle': 'off',
       'shadcn/no-arbitrary-values': 'off',
       'shadcn/require-static-classes': 'off',
-    },
-  },
-  {
-    // shadcn's generated Toaster uses a bare `toaster` marker class as the
-    // hook for its `group-[.toaster]:` styles. It is intentional, not a typo.
-    files: ['src/shared/ui/sonner.tsx'],
-    rules: {
-      'shadcn/no-unknown-classes': 'off',
     },
   },
   {

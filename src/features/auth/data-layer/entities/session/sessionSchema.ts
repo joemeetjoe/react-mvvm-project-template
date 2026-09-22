@@ -17,3 +17,12 @@ export const sessionSchema = z.object({
 export type SessionUser = z.infer<typeof sessionUserSchema>;
 export type SessionUserRole = SessionUser['role'];
 export type Session = z.infer<typeof sessionSchema>;
+
+// What the login form submits. The form hook validates against this before
+// the credentials go anywhere.
+export const loginCredentialsSchema = z.object({
+  email: z.string().email('Enter a valid email address'),
+  password: z.string().min(1, 'Enter your password'),
+});
+
+export type LoginCredentials = z.infer<typeof loginCredentialsSchema>;
