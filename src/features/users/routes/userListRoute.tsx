@@ -13,7 +13,7 @@ import { UserListSkeleton } from '../screens/UserList/UserListSkeleton';
 
 export const userListPageSizes = [10, 20, 50] as const;
 
-// List state lives in URL search params (decision 4). Anything invalid falls
+// List state lives in URL search params. Anything invalid falls
 // back to the default instead of erroring, so a bad or stale link still works.
 export const userListSearchSchema = z.object({
   sort: z.enum(userSortFields).catch('firstName'),
@@ -24,7 +24,7 @@ export const userListSearchSchema = z.object({
     .int()
     .refine((size) => (userListPageSizes as readonly number[]).includes(size))
     .catch(10),
-  // Filters (issue #6). An empty string means "no filter applied" so the URL
+  // Filters. An empty string means "no filter applied" so the URL
   // always carries the same keys, matching sort/direction/page/pageSize above.
   search: z.string().catch(''),
   role: z.union([z.enum(userRoles), z.literal('')]).catch(''),

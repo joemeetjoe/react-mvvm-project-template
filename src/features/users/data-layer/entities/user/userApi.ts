@@ -26,7 +26,6 @@ export type UserListParams = {
   direction: SortDirection;
   page: number;
   pageSize: number;
-  // Filters (issue #6). An empty string means "no filter applied".
   search?: string;
   role?: UserRole | '';
   status?: UserStatus | '';
