@@ -6,6 +6,7 @@ import { Link } from '@tanstack/react-router';
 import { DataTable } from '@/shared/components/DataTable';
 import { FilterCard } from '@/shared/components/FilterCard';
 import type { FilterFieldConfig } from '@/shared/components/FilterCard';
+import { Heading } from '@/shared/ui/typography';
 
 import type {
   SortDirection,
@@ -114,7 +115,7 @@ export const UserListView = ({
 
   return (
     <section className="space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
+      <Heading level="h1">Users</Heading>
 
       {/* `form.Subscribe` is headless rendering machinery reached entirely
           through the `form` prop (decision 7's allowed exception), bridging

@@ -16,13 +16,16 @@ export const AppNavbar = (): ReactElement => {
   };
 
   return (
-    <header className="flex items-center gap-2 h-16 px-4 border-b">
-      <SidebarTrigger className="h-6 w-6" />
-      <Separator orientation="vertical" className="h-6" />
-      <div className="flex-1" />
-      <Button variant="ghost" size="sm" onClick={handleLogout}>
-        Log out
-      </Button>
-    </header>
+    <>
+      <header className="flex h-16 items-center gap-2 px-4">
+        <SidebarTrigger />
+        <Separator orientation="vertical" className="h-6" />
+        <div className="flex-1" />
+        <Button variant="ghost" size="sm" onClick={handleLogout}>
+          Log out
+        </Button>
+      </header>
+      <Separator />
+    </>
   );
 };

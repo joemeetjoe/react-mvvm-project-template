@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/select';
+import { Text } from '@/shared/ui/typography';
 import {
   Table,
   TableBody,
@@ -151,9 +152,11 @@ export const DataTable = <TData,>({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">
-            Page {pagination.pageIndex + 1} of {Math.max(pageCount, 1)}
-          </span>
+          <Text variant="muted" asChild>
+            <span>
+              Page {pagination.pageIndex + 1} of {Math.max(pageCount, 1)}
+            </span>
+          </Text>
           <Button
             type="button"
             variant="outline"

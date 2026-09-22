@@ -20,6 +20,7 @@ import {
 } from '@/shared/ui/sidebar';
 import { Switch } from '@/shared/ui/switch';
 import { ScrollArea } from '@/shared/ui/scroll-area';
+import { Text } from '@/shared/ui/typography';
 
 export interface SidebarNavItem {
   title: string;
@@ -145,7 +146,9 @@ const ContentSidebar = ({
         <ScrollArea className="h-full">
           <SidebarGroup>
             <SidebarGroupContent>
-              <div className="p-2 text-muted-foreground">{activeItem.title} content</div>
+              <div className="p-2">
+                <Text variant="muted">{activeItem.title} content</Text>
+              </div>
             </SidebarGroupContent>
           </SidebarGroup>
         </ScrollArea>

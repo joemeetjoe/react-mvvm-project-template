@@ -1,6 +1,8 @@
 import type { ReactElement } from 'react';
 import { Link } from '@tanstack/react-router';
+import { TriangleAlert } from 'lucide-react';
 
+import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
 
 export type LoginFailedViewProps = {
@@ -8,27 +10,14 @@ export type LoginFailedViewProps = {
 };
 
 export const LoginFailedView = ({ redirectHref }: LoginFailedViewProps): ReactElement => (
-  <div className="text-center max-w-md">
-    <div className="text-destructive mb-4">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-16 w-16 mx-auto"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-        />
-      </svg>
-    </div>
-    <h2 className="text-2xl font-bold mb-4">Authentication Failed</h2>
-    <p className="text-muted-foreground mb-6">
-      We couldn't authenticate your credentials. Please try again.
-    </p>
+  <div className="flex w-full max-w-md flex-col gap-4">
+    <Alert variant="destructive">
+      <TriangleAlert />
+      <AlertTitle>Authentication Failed</AlertTitle>
+      <AlertDescription>
+        We couldn't authenticate your credentials. Please try again.
+      </AlertDescription>
+    </Alert>
     <Button asChild className="w-full">
       <Link to="/" search={{ redirect: redirectHref }}>
         Try Again

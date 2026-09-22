@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Text } from '@/shared/ui/typography';
 
 export type InfoCardField = {
   id: string;
@@ -33,12 +34,18 @@ export const InfoCard = ({ title, sections }: InfoCardProps): ReactElement => (
       <div className="flex flex-col gap-6">
         {sections.map((section) => (
           <div key={section.id} className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-muted-foreground">{section.title}</h3>
+            <Text variant="label" asChild>
+              <h3>{section.title}</h3>
+            </Text>
             <dl className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
               {section.fields.map((field) => (
                 <div key={field.id}>
-                  <dt className="text-xs text-muted-foreground">{field.label}</dt>
-                  <dd className="text-sm">{field.value}</dd>
+                  <Text variant="small" asChild>
+                    <dt>{field.label}</dt>
+                  </Text>
+                  <Text asChild>
+                    <dd>{field.value}</dd>
+                  </Text>
                 </div>
               ))}
             </dl>
