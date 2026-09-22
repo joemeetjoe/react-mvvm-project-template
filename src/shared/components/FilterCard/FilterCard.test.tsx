@@ -32,7 +32,7 @@ describe('FilterCard', () => {
     render(<FilterCard {...baseProps} values={{ search: 'ada', role: 'admin' }} />);
 
     expect(screen.getByLabelText('Search')).toHaveValue('ada');
-    expect(screen.getByLabelText('Role')).toHaveValue('admin');
+    expect(screen.getByLabelText('Role')).toHaveTextContent('Admin');
   });
 
   it('calls onValueChange when a text field changes', async () => {
@@ -50,9 +50,23 @@ describe('FilterCard', () => {
 
     const { user } = render(<FilterCard {...baseProps} onValueChange={onValueChange} />);
 
-    await user.selectOptions(screen.getByLabelText('Role'), 'user');
+    await user.click(screen.getByLabelText('Role'));
+    await user.click(await screen.findByRole('option', { name: 'User' }));
 
     expect(onValueChange).toHaveBeenCalledWith('role', 'user');
+  });
+
+  it('reports the empty string when the "all" option of a select field is chosen', async () => {
+    const onValueChange = vi.fn();
+
+    const { user } = render(
+      <FilterCard {...baseProps} values={{ search: '', role: 'admin' }} onValueChange={onValueChange} />,
+    );
+
+    await user.click(screen.getByLabelText('Role'));
+    await user.click(await screen.findByRole('option', { name: 'All Role' }));
+
+    expect(onValueChange).toHaveBeenCalledWith('role', '');
   });
 
   it('calls onSubmit when the form is submitted', async () => {
@@ -99,10 +113,10 @@ describe('FilterCard', () => {
     render(<FilterCard {...baseProps} values={{}} />);
 
     expect(screen.getByLabelText('Search')).toHaveValue('');
-    expect(screen.getByLabelText('Role')).toHaveValue('');
+    expect(screen.getByLabelText('Role')).toHaveTextContent('All Role');
   });
 
-  it('uses a custom allLabel for the placeholder option of a select field', () => {
+  it('uses a custom allLabel for the "all" option of a select field', () => {
     render(
       <FilterCard
         {...baseProps}
@@ -119,6 +133,6 @@ describe('FilterCard', () => {
       />,
     );
 
-    expect(screen.getByRole('option', { name: 'Any role' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Role')).toHaveTextContent('Any role');
   });
 });

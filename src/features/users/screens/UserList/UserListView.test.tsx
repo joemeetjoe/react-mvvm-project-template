@@ -124,7 +124,8 @@ describe('UserListView', () => {
       <UserListViewHarness {...props} onPageSizeChange={onPageSizeChange} />,
     );
 
-    await user.selectOptions(screen.getByLabelText('Rows per page'), '20');
+    await user.click(screen.getByLabelText('Rows per page'));
+    await user.click(await screen.findByRole('option', { name: '20' }));
 
     expect(onPageSizeChange).toHaveBeenCalledWith(20);
   });
@@ -138,7 +139,7 @@ describe('UserListView', () => {
     );
 
     expect(screen.getByLabelText('Search')).toHaveValue('ada');
-    expect(screen.getByLabelText('Role')).toHaveValue('admin');
+    expect(screen.getByLabelText('Role')).toHaveTextContent('admin');
   });
 
   it('submits the current filter values when Apply filters is clicked', async () => {

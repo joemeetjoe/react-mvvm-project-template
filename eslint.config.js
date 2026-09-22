@@ -4,6 +4,7 @@ import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import boundaries from 'eslint-plugin-boundaries';
+import { plugin as shadcn } from '@shadcn/lint';
 
 const viewRuleMessage =
   'A View has no external dependencies (decision 7). Move this to the ViewModel and pass the result in as a prop.';
@@ -131,6 +132,40 @@ export default tseslint.config(
           ],
         },
       ],
+    },
+  },
+  {
+    // All visual styling lives in the shadcn components under shared/ui.
+    // Everything else may only use Tailwind for layout and positioning.
+    // Components and theme are discovered automatically via components.json.
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: { shadcn },
+    rules: {
+      'shadcn/no-restyle': ['error', { allow: ['layout'] }],
+      'shadcn/no-raw-colors': 'error',
+      'shadcn/no-arbitrary-values': ['error', { allow: ['layout'] }],
+      'shadcn/no-inline-styles': 'error',
+      'shadcn/no-unknown-classes': 'error',
+      'shadcn/require-static-classes': 'error',
+    },
+  },
+  {
+    // shadcn-generated files are the one place styling is defined, so the
+    // restyle/arbitrary/static rules do not apply to them (per the plugin's
+    // adoption guide). Raw colors and inline styles stay banned.
+    files: ['src/shared/ui/**'],
+    rules: {
+      'shadcn/no-restyle': 'off',
+      'shadcn/no-arbitrary-values': 'off',
+      'shadcn/require-static-classes': 'off',
+    },
+  },
+  {
+    // shadcn's generated Toaster uses a bare `toaster` marker class as the
+    // hook for its `group-[.toaster]:` styles. It is intentional, not a typo.
+    files: ['src/shared/ui/sonner.tsx'],
+    rules: {
+      'shadcn/no-unknown-classes': 'off',
     },
   },
   {

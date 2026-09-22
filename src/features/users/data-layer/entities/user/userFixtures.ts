@@ -34,8 +34,6 @@ export const userFixtures: User[] = [
     createdAt: '2024-03-05T10:30:00Z',
     updatedAt: '2024-09-15T16:00:00Z',
   },
-  // USR-004 through USR-015 exist so the list has more than one page at the
-  // default page size (issue #5).
   {
     id: 'USR-004',
     firstName: 'Katherine',

@@ -64,9 +64,27 @@ const installMatchMedia = (): void => {
   });
 };
 
+/**
+ * jsdom has no pointer capture and no `scrollIntoView`; Radix Select calls
+ * both while opening and while highlighting an item.
+ */
+const installPointerAndScrollStubs = (): void => {
+  const proto = Element.prototype as Element & {
+    hasPointerCapture?: (pointerId: number) => boolean;
+    setPointerCapture?: (pointerId: number) => void;
+    releasePointerCapture?: (pointerId: number) => void;
+  };
+
+  proto.hasPointerCapture ??= () => false;
+  proto.setPointerCapture ??= () => undefined;
+  proto.releasePointerCapture ??= () => undefined;
+  proto.scrollIntoView ??= () => undefined;
+};
+
 export const installBrowserStubs = (): void => {
   installLocalStorage();
   installMatchMedia();
+  installPointerAndScrollStubs();
 };
 
 export const resetBrowserStubs = (): void => {
