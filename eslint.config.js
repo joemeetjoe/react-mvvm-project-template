@@ -7,7 +7,7 @@ import boundaries from 'eslint-plugin-boundaries';
 import { plugin as shadcn } from '@shadcn/lint';
 
 const viewRuleMessage =
-  'A View has no external dependencies (decision 7). Move this to the ViewModel and pass the result in as a prop.';
+  'A View has no external dependencies. Move this to the ViewModel and pass the result in as a prop.';
 
 export default tseslint.config(
   // `npm run lint` only ever targets `src/`; `e2e/` is Playwright's own tree
@@ -46,7 +46,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'react-hooks/rules-of-hooks': 'error',
 
-      // Decision 10: the custom renderer is the only way into Testing Library.
+      // The custom renderer is the only way into Testing Library.
       'no-restricted-imports': [
         'error',
         {
@@ -65,7 +65,7 @@ export default tseslint.config(
         },
       ],
 
-      // Decision 6: app -> features -> shared, and no feature-to-feature imports.
+      // app -> features -> shared, and no feature-to-feature imports.
       'boundaries/element-types': [
         'error',
         {
@@ -98,7 +98,7 @@ export default tseslint.config(
     },
   },
   {
-    // Decision 7: a View has no external dependencies.
+    // A View has no external dependencies.
     files: ['src/**/*View.tsx', 'src/shared/components/**/*.{ts,tsx}'],
     rules: {
       '@typescript-eslint/no-restricted-imports': [
@@ -176,8 +176,7 @@ export default tseslint.config(
     },
   },
   {
-    // Shared code's own tests (e.g. the http wrapper) reach the custom renderer
-    // and the MSW test server the same way feature tests do (decision 10).
+    // Shared code's own tests reach the custom renderer and the MSW test server the same way feature tests do.
     files: ['src/shared/**/*.test.{ts,tsx}'],
     rules: {
       'boundaries/element-types': [

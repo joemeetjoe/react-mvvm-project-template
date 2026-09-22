@@ -6,10 +6,6 @@ import { {{entityCamel}}ListQueryOptions } from '../data-layer/entities/{{entity
 import { {{entityPascal}}List } from '../screens/{{entityPascal}}List';
 import { {{entityPascal}}ListSkeleton } from '../screens/{{entityPascal}}List/{{entityPascal}}ListSkeleton';
 
-/**
- * A feature never names its parent route: `app/router` owns the layout tree
- * and injects the parent here, so `features/` never imports `app/`.
- */
 export const create{{entityPascal}}ListRoute = <TParentRoute extends AnyRoute>(
   parentRoute: TParentRoute,
 ) =>

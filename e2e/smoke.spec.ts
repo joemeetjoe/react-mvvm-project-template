@@ -5,18 +5,6 @@ import { NavbarPage } from './pages/NavbarPage';
 import { UserDetailPage } from './pages/UserDetailPage';
 import { UsersListPage } from './pages/UsersListPage';
 
-/**
- * A smoke layer above the integration tests (issue #15): a single journey
- * through the app in a real browser, proving the app boots, routing works,
- * and the MSW dev worker serves data end to end. Business-logic edge cases
- * belong in the Vitest integration/ViewModel tests, not here (see
- * CONTRIBUTING.md#end-to-end-vs-integration-tests).
- *
- * The in-memory MSW user store resets on every full page load
- * (`src/features/users/data-layer/entities/user/userHandlers.ts`), and each
- * Playwright test gets a fresh page, so this journey never leaks state into
- * another test.
- */
 test('log in, browse users, edit a user, and log out', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const navbar = new NavbarPage(page);

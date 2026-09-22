@@ -27,9 +27,7 @@ const filterOptions: UserFilterOptions = {
   departments: ['Engineering', 'Research'],
 };
 
-// `form` is a real TanStack Form instance (typed via the colocated form
-// hook, decision 8) rather than a hand-rolled stub, so this harness renders
-// it the only way it can be created: inside a component.
+// A real TanStack Form instance can only be created inside a component, hence this harness.
 type HarnessProps = Omit<UserListViewProps, 'form'> & {
   defaultValues?: UserFilterFormValues;
   onFilterSubmit?: (values: UserFilterFormValues) => void;

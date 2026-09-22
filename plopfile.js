@@ -45,12 +45,6 @@ const SIDEBAR_ICON_ANCHOR = '// plop:sidebar-icon-import';
 const SIDEBAR_ITEM_ANCHOR = '// Add new feature nav items here';
 const SIDEBAR_ICON_NAME = 'List';
 
-/**
- * Wires the generated route factory into `app/router/router.tsx`: one import
- * line above the import anchor, one `createXListRoute(protectedLayoutRoute)`
- * call above the registration anchor. Idempotent — reruns for the same
- * entity are a no-op instead of a duplicate import.
- */
 const insertRouteRegistration = (answers) => {
   const { entityPascal, entityCamel, featureKebab } = answers;
   const routeFactory = `create${entityPascal}ListRoute`;
@@ -77,11 +71,6 @@ const insertRouteRegistration = (answers) => {
   return `updated ${ROUTER_PATH}`;
 };
 
-/**
- * Aggregates the generated entity's MSW handlers into the given file (the
- * dev-worker's `handlers.ts` or the test `server.ts`) — same shape, both call
- * sites. Idempotent per entity.
- */
 const insertHandlerRegistration = (filePath) => (answers) => {
   const { entityCamel, featureKebab } = answers;
   const handlersName = `${entityCamel}Handlers`;
@@ -111,11 +100,6 @@ const insertHandlerRegistration = (filePath) => (answers) => {
   return `updated ${filePath}`;
 };
 
-/**
- * Adds an optional nav entry to the sidebar. Reuses a single generic icon
- * import across every generated feature so two generator runs never declare
- * the same local binding twice.
- */
 const insertSidebarNavItem = (answers) => {
   const { titleCasePlural, pluralKebab } = answers;
 

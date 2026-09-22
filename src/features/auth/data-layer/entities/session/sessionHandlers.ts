@@ -7,10 +7,6 @@ type LoginRequestBody = {
   password?: string;
 };
 
-/**
- * Shared by the test server (`shared/testing/server`) and, from #10, the
- * dev-mode browser worker.
- */
 export const sessionHandlers = [
   http.post('*/api/login', async ({ request }) => {
     const body = (await request.json()) as LoginRequestBody;

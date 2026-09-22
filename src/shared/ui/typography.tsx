@@ -1,8 +1,4 @@
-// Hand-written, not shadcn-generated. shadcn ships typography only as docs
-// (https://ui.shadcn.com/docs/components/typography), so this file turns
-// those recipes into components. It is the only place text styling lives:
-// screens and shared components never put text-*/font-* classes on plain
-// elements, they render <Heading> and <Text> instead.
+// Hand-written, not shadcn-generated (shadcn ships typography only as docs). The only place text styling lives.
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"

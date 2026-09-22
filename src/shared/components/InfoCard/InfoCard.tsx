@@ -20,11 +20,6 @@ export type InfoCardProps = {
   sections: InfoCardSection[];
 };
 
-/**
- * A prop-driven card for showing read-only entity fields grouped into
- * labelled sections. Has no external dependencies (decision 7): every value
- * it renders arrives as a prop.
- */
 export const InfoCard = ({ title, sections }: InfoCardProps): ReactElement => (
   <Card>
     <CardHeader>

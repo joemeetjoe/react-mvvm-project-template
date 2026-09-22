@@ -51,35 +51,17 @@ export const createTestQueryClient = (): QueryClient =>
 
 type TestRouterContext = { queryClient: QueryClient };
 
-/**
- * The host router is built once per `renderHook` call, so what it renders has
- * to reach it through context rather than through a closure that would go stale.
- */
 const HostChildrenContext = createContext<ReactNode>(null);
 
 const HostRoute = (): ReactElement => (
   <Suspense fallback={null}>{useContext(HostChildrenContext)}</Suspense>
 );
 
-/**
- * A ViewModel hook that reads `useSearch({ from: someId })` needs the host
- * router to have a real route registered at that exact id (decision 4's
- * accepted cost) — the generic `/` and `$` routes below don't have one. `id`
- * is the route's full id as the app's router resolves it (e.g.
- * `/mainLayout/protectedLayout/users`, including pathless layout routes) —
- * every segment but the last becomes a pathless ancestor, so the id matches.
- */
 export type HostSearchRoute = {
   id: string;
   validateSearch?: (search: Record<string, unknown>) => Record<string, unknown>;
 };
 
-/**
- * Builds a route at `path`, wrapped in a pathless ancestor for each entry in
- * `ancestorIds`, wiring each level's `addChildren` so the tree actually
- * matches (unlike `getParentRoute`, which only carries type/context info).
- * Returns the outermost route, ready to hang off `rootRoute.addChildren`.
- */
 const buildNestedRoute = (
   parent: AnyRoute,
   ancestorIds: string[],
@@ -97,10 +79,6 @@ const buildNestedRoute = (
   return ancestor.addChildren([buildNestedRoute(ancestor, rest, path, validateSearch)]) as AnyRoute;
 };
 
-/**
- * A throwaway router whose every path renders the host children, so a hook
- * under test sees the same router and query-client context as in the app.
- */
 const createHostRouter = (
   initialRoute: string,
   queryClient: QueryClient,
@@ -129,13 +107,6 @@ const createHostRouter = (
   });
 };
 
-/**
- * Renders a component on its own. Views are pure, so this needs no providers
- * beyond a router context — present only so a View's own `<Link>` (the one
- * router import decision 7 allows) has somewhere to read it from. Uses
- * `RouterContextProvider` rather than `RouterProvider` so it supplies that
- * context without the async route matching a full router render would need.
- */
 export const render = (ui: ReactElement): RenderResult => {
   const router = createHostRouter('/', createTestQueryClient());
 
@@ -151,11 +122,6 @@ export type RouteRenderResult = RenderResult & {
   router: AnyRouter;
 };
 
-/**
- * Renders the real application route tree at `initialRoute`, so an integration
- * test exercises the route's loader, pending component and error component
- * exactly as the app does.
- */
 export const renderRoute = ({
   initialRoute = '/',
   session,
@@ -189,11 +155,7 @@ export type RenderHookResult<TResult> = ReturnType<
   queryClient: QueryClient;
 };
 
-/**
- * Renders a ViewModel hook inside the app's providers. The hook suspends while
- * its query loads, so `result.current` is `null` until the data arrives — wait
- * on it with `waitFor`.
- */
+/** The hook suspends while its query loads, so `result.current` is `null` until the data arrives. */
 export const renderHook = <TResult,>(
   hook: () => TResult,
   {

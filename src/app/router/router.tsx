@@ -16,8 +16,6 @@ import type { RouterContext } from './routerContext';
 
 export type { RouterContext };
 
-// `app/` owns the layout tree and passes each feature's route factory the
-// parent it hangs off, so a feature never imports `app/` (decision 6).
 export const routeTree = rootRoute.addChildren([
   mainLayoutRoute.addChildren([
     protectedLayoutRoute.addChildren([

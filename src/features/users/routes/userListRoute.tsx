@@ -38,12 +38,6 @@ export const userListSearchSchema = z.object({
 export const validateUserListSearch = (search: Record<string, unknown>) =>
   userListSearchSchema.parse(search);
 
-/**
- * A feature never names its parent route: `app/router` owns the layout tree and
- * injects the parent here, so `features/` never imports `app/` (decision 6)
- * while TanStack Router still gets the `getParentRoute` link it needs to type
- * the tree.
- */
 export const createUserListRoute = <TParentRoute extends AnyRoute>(parentRoute: TParentRoute) =>
   createRoute({
     getParentRoute: () => parentRoute,

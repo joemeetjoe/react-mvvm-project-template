@@ -55,8 +55,7 @@ export const useUserListViewModel = (): UserListViewProps => {
 
   const form = useUserFilterForm(filterDefaults, onFilterSubmit);
 
-  // Keeps the draft form in sync with the URL when it changes from outside a
-  // submission (e.g. browser back/forward), the accepted cost of decision 4.
+  // Re-syncs the draft form when the URL changes outside a submission (e.g. browser back/forward).
   useEffect(() => {
     form.reset(filterDefaults);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -33,7 +33,6 @@ export default defineConfig({
         // neither of which a jsdom test runs.
         'src/app/main.tsx',
       ],
-      // Tiered per decision 10.
       thresholds: {
         'src/app/**': appTier,
         'src/features/**': featureTier,

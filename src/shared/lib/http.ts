@@ -1,12 +1,5 @@
 import { useSessionStore } from '@/shared/stores/sessionStore';
 
-/**
- * The single network boundary for the app. Every data-layer `api` module goes
- * through it, so MSW only ever has one kind of request to intercept. It also
- * attaches the session token and clears the session on a 401 (decision 6),
- * so no data-layer module has to know about the session store.
- */
-
 export class HttpError extends Error {
   readonly status: number;
 

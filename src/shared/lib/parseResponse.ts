@@ -1,10 +1,6 @@
 import type { ZodType } from 'zod';
 
-/**
- * Raised when a response is well-formed JSON but not the shape the schema
- * expects. The route error component renders `message`, so it stays readable —
- * and, unlike a raw `ZodError`, it survives being logged.
- */
+/** Raised when a response is valid JSON but not the shape the schema expects. */
 export class ResponseParseError extends Error {
   readonly issues: string;
 

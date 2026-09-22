@@ -1,12 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * Smoke tests run against the Vite dev server with `VITE_API_MOCK=true`, the
- * same way a developer runs the app locally (see README Quick start). The
- * app only starts its MSW worker when `import.meta.env.DEV` is true (decision
- * in `src/app/mocks/enableMocking.ts`), so a production build + `preview`
- * would serve no mock data without changing that gate — out of scope here.
- */
 const port = 5183;
 const baseURL = `http://localhost:${port}`;
 

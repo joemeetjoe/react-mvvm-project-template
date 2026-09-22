@@ -1,7 +1,3 @@
-/**
- * Browser APIs jsdom does not provide (or that Node shadows), stubbed once for
- * every test rather than mocked per test file.
- */
 
 const createMemoryStorage = (): Storage => {
   const entries = new Map<string, string>();
@@ -24,11 +20,7 @@ const createMemoryStorage = (): Storage => {
   };
 };
 
-/**
- * Node exposes a `localStorage` global that shadows jsdom's and whose methods
- * are missing unless the process was started with `--localstorage-file`.
- * Anything that persists (the session store) needs a working one.
- */
+/** Node's own `localStorage` global shadows jsdom's and lacks methods unless started with `--localstorage-file`. */
 const installLocalStorage = (): void => {
   if (typeof globalThis.localStorage?.setItem === 'function') {
     return;
@@ -64,10 +56,7 @@ const installMatchMedia = (): void => {
   });
 };
 
-/**
- * jsdom has no pointer capture and no `scrollIntoView`; Radix Select calls
- * both while opening and while highlighting an item.
- */
+/** jsdom has no pointer capture or `scrollIntoView`; Radix Select calls both. */
 const installPointerAndScrollStubs = (): void => {
   const proto = Element.prototype as Element & {
     hasPointerCapture?: (pointerId: number) => boolean;

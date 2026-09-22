@@ -31,11 +31,7 @@ export type FilterCardProps = {
   isSubmitDisabled?: boolean;
 };
 
-/**
- * Radix Select forbids an item whose value is the empty string, so the "all"
- * item carries this sentinel inside the component and is translated back to
- * `''` at the prop boundary. Callers only ever see `''`.
- */
+// Radix Select forbids an empty-string item value, so "all" uses this sentinel and maps back to '' at the prop boundary.
 const ALL_VALUE = '__all__';
 
 const toSelectValue = (value: string | undefined): string => value || ALL_VALUE;

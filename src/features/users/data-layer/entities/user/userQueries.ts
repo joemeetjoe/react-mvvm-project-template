@@ -38,11 +38,6 @@ export const userFilterOptionsQueryOptions = () =>
 
 export type UserUpdateContext = { previousUser: User | undefined };
 
-/**
- * Owns the cache work for editing a user (decision 8): applies the update to
- * the cached detail optimistically, rolls it back if the request fails, and
- * invalidates the detail and list queries once the mutation settles either way.
- */
 export const userUpdateMutationOptions = (
   queryClient: QueryClient,
   id: string,

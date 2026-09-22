@@ -117,9 +117,6 @@ export const UserListView = ({
     <section className="space-y-4">
       <Heading level="h1">Users</Heading>
 
-      {/* `form.Subscribe` is headless rendering machinery reached entirely
-          through the `form` prop (decision 7's allowed exception), bridging
-          the ViewModel's TanStack Form into the FilterCard's plain props. */}
       <form.Subscribe selector={(state) => state.values}>
         {(values) => (
           <FilterCard

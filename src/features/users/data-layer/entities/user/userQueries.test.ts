@@ -9,11 +9,6 @@ import { userFixtures } from './userFixtures';
 import { resetUserFixtures } from './userHandlers';
 import { userDetailQueryOptions, userKeys, userUpdateMutationOptions } from './userQueries';
 
-/**
- * Mirrors how the real ViewModel uses these options: an active `useQuery`
- * observer on the detail key (so the cache entry isn't garbage-collected
- * between assertions) plus the mutation under test.
- */
 const useTestUserUpdateMutation = (id: string) => {
   const queryClient = useQueryClient();
   const detailQuery = useQuery(userDetailQueryOptions(id));

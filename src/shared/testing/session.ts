@@ -10,10 +10,7 @@ export const signedInSession: Session = {
   token: 'test-token',
 };
 
-/**
- * Seeds the session a test renders with. `undefined` means "signed in", which
- * is what almost every test wants; `null` renders signed out.
- */
+/** `undefined` renders signed in; `null` renders signed out. */
 export const applySession = (session: Session | null | undefined): void => {
   const resolved = session === undefined ? signedInSession : session;
 

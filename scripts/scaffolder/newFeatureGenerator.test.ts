@@ -1,15 +1,4 @@
 // @vitest-environment node
-//
-// The acceptance check for issue #16: runs the `new-feature` plop generator
-// programmatically (node-plop, which ships with `plop`) against a throwaway
-// sample feature, then asserts the generated files lint clean (including the
-// boundaries + View-import rules), typecheck clean, and that the generated
-// integration test fails for the right reason (the placeholder screen, not a
-// compile/lint/import error).
-//
-// This is slow (a real `tsc -b --force` and a real `vitest run`), so it is
-// wired into its own `npm run test:scaffolder` / CI step instead of the
-// default `npm run validate` — see CONTRIBUTING.md.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';

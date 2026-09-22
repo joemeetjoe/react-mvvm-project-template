@@ -34,12 +34,6 @@ export type DataTableProps<TData> = {
   emptyMessage?: string;
 };
 
-/**
- * A fully controlled table: sorting and pagination state, and their change
- * handlers, arrive as props (decision 4 / issue #5). It keeps no competing
- * internal state of its own — `useReactTable` here is headless rendering
- * machinery driven entirely by those props (decision 7's allowed exception).
- */
 export const DataTable = <TData,>({
   columns,
   data,
