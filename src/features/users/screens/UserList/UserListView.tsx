@@ -14,7 +14,7 @@ import type {
   UserFilterOptions,
   UserSortField,
 } from '../../data-layer/entities/user/userSchema';
-import type { UserFilterForm } from './useUserFilterForm';
+import type { UserFilterForm, UserFilterFormValues } from './useUserFilterForm';
 
 export type UserListViewProps = {
   users: User[];
@@ -22,7 +22,7 @@ export type UserListViewProps = {
   sort: { field: UserSortField; direction: SortDirection };
   page: number;
   pageSize: number;
-  isFetching: boolean;
+  pageSizeOptions: readonly number[];
   onSortChange: (sort: { field: UserSortField; direction: SortDirection }) => void;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
@@ -32,9 +32,9 @@ export type UserListViewProps = {
   onClearFilters: () => void;
 };
 
-const pageSizeOptions = [10, 20, 50] as const;
-
-const columns: ColumnDef<User, string>[] = [
+// Column ids double as sort fields, so they are kept literal: `onSortChange`
+// below only compiles while every id here is a `UserSortField`.
+const columns = [
   {
     id: 'firstName',
     header: 'Name',
@@ -49,11 +49,17 @@ const columns: ColumnDef<User, string>[] = [
   { id: 'department', accessorKey: 'department', header: 'Department' },
   { id: 'role', accessorKey: 'role', header: 'Role' },
   { id: 'status', accessorKey: 'status', header: 'Status' },
-];
+] as const satisfies readonly ColumnDef<User, string>[];
+
+type ColumnId = (typeof columns)[number]['id'];
+
+const isColumnId = (id: string): id is ColumnId => columns.some((column) => column.id === id);
 
 // Filter options come from the data-layer query, not from constants here
 // (issue #6) — this only shapes them into the shared FilterCard's field config.
-const buildFilterFields = (filterOptions: UserFilterOptions): FilterFieldConfig[] => [
+const buildFilterFields = (
+  filterOptions: UserFilterOptions,
+): FilterFieldConfig<keyof UserFilterFormValues>[] => [
   { id: 'search', label: 'Search', kind: 'text', placeholder: 'Name or email' },
   {
     id: 'role',
@@ -81,7 +87,7 @@ export const UserListView = ({
   sort,
   page,
   pageSize,
-  isFetching,
+  pageSizeOptions,
   onSortChange,
   onPageChange,
   onPageSizeChange,
@@ -100,7 +106,11 @@ export const UserListView = ({
   const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
     const [next] = functionalUpdate(updater, sorting);
 
-    onSortChange({ field: next.id as UserSortField, direction: next.desc ? 'desc' : 'asc' });
+    if (!isColumnId(next.id)) {
+      return;
+    }
+
+    onSortChange({ field: next.id, direction: next.desc ? 'desc' : 'asc' });
   };
 
   const handlePaginationChange: OnChangeFn<PaginationState> = (updater) => {
@@ -121,14 +131,13 @@ export const UserListView = ({
         {(values) => (
           <FilterCard
             fields={filterFields}
-            values={values as Record<string, string>}
-            onValueChange={(id, value) => form.setFieldValue(id as never, value as never)}
+            values={values}
+            onValueChange={(id, value) => form.setFieldValue(id, value)}
             onSubmit={() => {
               void form.handleSubmit();
             }}
             onClear={onClearFilters}
             hasActiveFilters={hasActiveFilters}
-            isSubmitDisabled={isFetching}
           />
         )}
       </form.Subscribe>
@@ -142,7 +151,6 @@ export const UserListView = ({
         onPaginationChange={handlePaginationChange}
         pageCount={pageCount}
         pageSizeOptions={pageSizeOptions}
-        isFetching={isFetching}
         emptyMessage="No users to show."
       />
     </section>

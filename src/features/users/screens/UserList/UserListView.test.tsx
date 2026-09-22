@@ -49,7 +49,7 @@ const props: HarnessProps = {
   sort: { field: 'firstName', direction: 'asc' },
   page: 1,
   pageSize: 10,
-  isFetching: false,
+  pageSizeOptions: [10, 20, 50],
   onSortChange: vi.fn(),
   onPageChange: vi.fn(),
   onPageSizeChange: vi.fn(),
@@ -165,11 +165,5 @@ describe('UserListView', () => {
     await user.click(screen.getByRole('button', { name: /clear filters/i }));
 
     expect(onClearFilters).toHaveBeenCalledTimes(1);
-  });
-
-  it('disables the filter submit button while the list is fetching', () => {
-    render(<UserListViewHarness {...props} isFetching />);
-
-    expect(screen.getByRole('button', { name: /apply filters/i })).toBeDisabled();
   });
 });

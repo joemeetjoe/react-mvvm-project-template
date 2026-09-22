@@ -151,12 +151,4 @@ describe('DataTable', () => {
 
     expect(next).toEqual({ pageIndex: 0, pageSize: 20 });
   });
-
-  it('marks the table busy while fetching', () => {
-    const { container } = render(
-      <DataTable {...baseProps} isFetching onSortingChange={vi.fn()} onPaginationChange={vi.fn()} />,
-    );
-
-    expect(container.querySelector('[aria-busy="true"]')).toBeInTheDocument();
-  });
 });

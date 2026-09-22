@@ -229,7 +229,7 @@ own feature (integration tests come first, per
 `npm run new-feature` (prompts for a feature and entity name) or
 `npm run new-feature -- <feature> <entity>` (e.g. `npm run new-feature -- invoices
 invoice`), which wires up steps 1–4 below and drops in the failing integration test
-from step 5 for you to make pass. See `plopfile.js` and `plop-templates/new-feature/`.
+from step 5 for you to make pass. See `plop-templates/plopfile.js` and `plop-templates/new-feature/`.
 
 1. **Data layer.** Under `features/<name>/data-layer/entities/<entity>/`, add:
    - `<entity>Schema.ts` — zod object schema, inferred `type`, and any enums

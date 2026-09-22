@@ -135,4 +135,29 @@ describe('FilterCard', () => {
 
     expect(screen.getByLabelText('Role')).toHaveTextContent('Any role');
   });
+
+  it('checks values and onValueChange against the declared field ids at compile time', () => {
+    const typedFields: FilterFieldConfig<'search' | 'role'>[] = [
+      { id: 'search', label: 'Search', kind: 'text' },
+      { id: 'role', label: 'Role', kind: 'select', options: [] },
+    ];
+    const onValueChange = (id: 'search' | 'role', value: string): void => {
+      void id;
+      void value;
+    };
+
+    render(
+      <FilterCard
+        fields={typedFields}
+        // @ts-expect-error -- `department` is not one of the declared field ids.
+        values={{ search: '', role: '', department: '' }}
+        onValueChange={onValueChange}
+        onSubmit={vi.fn()}
+        onClear={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    );
+
+    expect(screen.getByLabelText('Search')).toBeInTheDocument();
+  });
 });

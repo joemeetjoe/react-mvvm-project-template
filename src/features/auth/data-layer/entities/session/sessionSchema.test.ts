@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { sessionSchema, sessionUserSchema } from './sessionSchema';
+import { loginCredentialsSchema, sessionSchema, sessionUserSchema } from './sessionSchema';
 
 const validUser = { id: '1', email: 'admin@example.com', name: 'Admin User', role: 'admin' };
 const validSession = { user: validUser, token: 'test-token' };
@@ -38,5 +38,21 @@ describe('sessionSchema', () => {
     const { user: _user, ...withoutUser } = validSession;
 
     expect(() => sessionSchema.parse(withoutUser)).toThrow();
+  });
+});
+
+describe('loginCredentialsSchema', () => {
+  const validCredentials = { email: 'admin@example.com', password: 'password' };
+
+  it('accepts an email address and a non-empty password', () => {
+    expect(loginCredentialsSchema.parse(validCredentials)).toEqual(validCredentials);
+  });
+
+  it('rejects an email that is not an email address', () => {
+    expect(() => loginCredentialsSchema.parse({ ...validCredentials, email: 'nope' })).toThrow();
+  });
+
+  it('rejects an empty password', () => {
+    expect(() => loginCredentialsSchema.parse({ ...validCredentials, password: '' })).toThrow();
   });
 });

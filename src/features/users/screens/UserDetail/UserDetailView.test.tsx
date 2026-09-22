@@ -44,6 +44,8 @@ const buildProps = (overrides: Partial<UserDetailViewProps> = {}): UserDetailVie
   isSaving: false,
   saveError: null,
   form,
+  roleOptions: ['admin', 'user', 'manager'],
+  statusOptions: ['active', 'inactive'],
   onBack: vi.fn(),
   onEdit: vi.fn(),
   onCancel: vi.fn(),
@@ -87,6 +89,27 @@ describe('UserDetailView', () => {
     expect(screen.getByLabelText('First Name')).toHaveValue('Ada');
     expect(screen.getByLabelText('Email')).toHaveValue('ada.lovelace@example.com');
     expect(screen.queryByText('Personal Information')).not.toBeInTheDocument();
+  });
+
+  it('renders role and status as selects offering the given options', async () => {
+    const { user } = render(<UserDetailView {...buildProps({ isEditing: true })} />);
+
+    expect(screen.getByLabelText('Role')).toHaveTextContent('admin');
+    expect(screen.getByLabelText('Status')).toHaveTextContent('active');
+
+    await user.click(screen.getByLabelText('Role'));
+    await user.click(await screen.findByRole('option', { name: 'manager' }));
+
+    expect(screen.getByLabelText('Role')).toHaveTextContent('manager');
+    expect(form.state.values.role).toBe('manager');
+  });
+
+  it('shows a field error when a text field is emptied', async () => {
+    const { user } = render(<UserDetailView {...buildProps({ isEditing: true })} />);
+
+    await user.clear(screen.getByLabelText('First Name'));
+
+    expect(await screen.findByText(/at least 1 character/i)).toBeInTheDocument();
   });
 
   it('disables Save and Cancel, and shows saving text, while isSaving is true', () => {

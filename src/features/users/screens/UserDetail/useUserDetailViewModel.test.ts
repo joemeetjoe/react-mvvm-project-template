@@ -45,6 +45,51 @@ describe('useUserDetailViewModel', () => {
     expect(fields).toContainEqual({ id: 'updatedAt', label: 'Last Updated', value: '2024-11-20' });
   });
 
+  it('offers every known role and status as edit options', async () => {
+    const [user] = userFixtures;
+    const { result } = renderHook(() => useUserDetailViewModel(user.id));
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    expect(result.current?.roleOptions).toEqual(['admin', 'user', 'manager', 'editor', 'viewer']);
+    expect(result.current?.statusOptions).toEqual(['active', 'inactive', 'pending']);
+  });
+
+  it('saves a changed role as the parsed enum value', async () => {
+    const [user] = userFixtures;
+    const { result } = renderHook(() => useUserDetailViewModel(user.id));
+
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
+
+    act(() => {
+      result.current?.onEdit();
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isEditing).toBe(true);
+    });
+
+    act(() => {
+      result.current?.form.setFieldValue('role', 'viewer');
+    });
+
+    await act(async () => {
+      await result.current?.form.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(result.current?.isEditing).toBe(false);
+    });
+
+    const fields = (result.current?.sections ?? []).flatMap((section) => section.fields);
+
+    expect(fields).toContainEqual({ id: 'role', label: 'Role', value: 'viewer' });
+  });
+
   it('provides an onBack handler', async () => {
     const [user] = userFixtures;
     const { result } = renderHook(() => useUserDetailViewModel(user.id));

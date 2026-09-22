@@ -1,7 +1,19 @@
 import { HttpResponse, http } from 'msw';
+import { z } from 'zod';
 
-import { type SortDirection, type User, type UserSortField, userRoles, userStatuses } from './userSchema';
+import {
+  type SortDirection,
+  type User,
+  type UserSortField,
+  userRoles,
+  userSortFields,
+  userStatuses,
+} from './userSchema';
 import { userFixtures } from './userFixtures';
+
+// Mirrors the route's search schema: an unknown value falls back to the default.
+const sortParamSchema = z.enum(userSortFields).catch('firstName');
+const directionParamSchema = z.enum(['asc', 'desc']).catch('asc');
 
 const compareUsers =
   (field: UserSortField, direction: SortDirection) =>
@@ -37,8 +49,8 @@ const matchesFilters = (
 export const userHandlers = [
   http.get('*/api/users', ({ request }) => {
     const url = new URL(request.url);
-    const sort = (url.searchParams.get('sort') ?? 'firstName') as UserSortField;
-    const direction = (url.searchParams.get('direction') ?? 'asc') as SortDirection;
+    const sort = sortParamSchema.parse(url.searchParams.get('sort'));
+    const direction = directionParamSchema.parse(url.searchParams.get('direction'));
     const page = Number(url.searchParams.get('page') ?? '1');
     const pageSize = Number(url.searchParams.get('pageSize') ?? '10');
     const search = (url.searchParams.get('search') ?? '').trim().toLowerCase();

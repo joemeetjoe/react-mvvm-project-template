@@ -81,7 +81,9 @@ describe('new-feature generator', () => {
   it(
     'generates a feature that lints and typechecks, with an integration test that fails for the right reason',
     async () => {
-      const plop = await nodePlop(path.join(repoRoot, 'plopfile.js'));
+      const plop = await nodePlop(path.join(repoRoot, 'plop-templates/plopfile.js'), {
+        destBasePath: repoRoot,
+      });
       const generator = plop.getGenerator('new-feature');
 
       const { failures } = await generator.runActions({ feature: FEATURE, entity: ENTITY });

@@ -1,21 +1,18 @@
 import { useForm } from '@tanstack/react-form';
 
-import type { UserRole, UserStatus } from '../../data-layer/entities/user/userSchema';
+import { emptyUserListFilter } from '../../data-layer/entities/user/userSchema';
 
-// An empty string means "no filter", matching the route's search schema.
+// The draft the user is typing into. Every field is a plain string because
+// every widget yields one; the ViewModel parses the draft with
+// `userListFilterSchema` on submit, so the View never narrows a value.
 export type UserFilterFormValues = {
   search: string;
-  role: UserRole | '';
-  status: UserStatus | '';
+  role: string;
+  status: string;
   department: string;
 };
 
-export const emptyUserFilterFormValues: UserFilterFormValues = {
-  search: '',
-  role: '',
-  status: '',
-  department: '',
-};
+export const emptyUserFilterFormValues: UserFilterFormValues = emptyUserListFilter;
 
 export const useUserFilterForm = (
   defaultValues: UserFilterFormValues,

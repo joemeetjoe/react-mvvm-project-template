@@ -1,5 +1,6 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import type { ColumnDef, OnChangeFn, PaginationState, SortingState } from '@tanstack/react-table';
+import { useMemo } from 'react';
 import type { ReactElement } from 'react';
 
 import { Button } from '@/shared/ui/button';
@@ -22,7 +23,7 @@ import {
 } from '@/shared/ui/table';
 
 export type DataTableProps<TData> = {
-  columns: ColumnDef<TData, string>[];
+  columns: readonly ColumnDef<TData, string>[];
   data: TData[];
   sorting: SortingState;
   onSortingChange: OnChangeFn<SortingState>;
@@ -30,7 +31,6 @@ export type DataTableProps<TData> = {
   onPaginationChange: OnChangeFn<PaginationState>;
   pageCount: number;
   pageSizeOptions: readonly number[];
-  isFetching?: boolean;
   emptyMessage?: string;
 };
 
@@ -43,12 +43,14 @@ export const DataTable = <TData,>({
   onPaginationChange,
   pageCount,
   pageSizeOptions,
-  isFetching = false,
   emptyMessage = 'No results.',
 }: DataTableProps<TData>): ReactElement => {
+  // TanStack Table wants a mutable array; callers may hand in a readonly one.
+  const columnDefs = useMemo(() => [...columns], [columns]);
+
   const table = useReactTable({
     data,
-    columns,
+    columns: columnDefs,
     state: { sorting, pagination },
     onSortingChange,
     onPaginationChange,
@@ -64,7 +66,7 @@ export const DataTable = <TData,>({
   const canNextPage = pagination.pageIndex < pageCount - 1;
 
   return (
-    <div className="space-y-4" aria-busy={isFetching}>
+    <div className="space-y-4">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
